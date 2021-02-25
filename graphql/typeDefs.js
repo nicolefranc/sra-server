@@ -54,6 +54,26 @@ module.exports = gql`
         checklist: [Checklist]
     }
 
+    input ILineItems {
+        lineItem: String,
+    }
+
+    input ISubcategories {
+        subcategory: String
+        lineItems: [ILineItems]
+    }
+
+    input IChecklist {
+        category: String!
+        weightage: Int!
+        subcategories: [ISubcategories]
+    }
+
+    input TemplateInput {
+        templateType: String!
+        checklist: [IChecklist]
+    }
+
     type Query {
         getAllAuditors: [Auditor]
         getAuditorById(auditorId: String!): Auditor
@@ -61,7 +81,7 @@ module.exports = gql`
         getAllReportTemplates: [Report]
     }
     
-    type Mutations {
-        createReport(body: String!): Report!
+    type Mutation {
+        createReportTemplate(body: TemplateInput!): Report!
     }
 `
