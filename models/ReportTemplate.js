@@ -1,8 +1,8 @@
 const { model, Schema } = require('mongoose');
 
-const reportSchema = new Schema({
+const reportTemplateSchema = new Schema({
     templateType: String,
-    tenantId: String,
+    tenant: String,
     auditorId: String,
     auditDate: String,
     auditScore: Number,
@@ -20,4 +20,4 @@ const reportSchema = new Schema({
     checklist: Array
 });
 
-module.exports = model('Report', reportSchema);
+module.exports = model('ReportTemplate', reportTemplateSchema, 'reportTemplates');

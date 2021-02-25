@@ -9,6 +9,18 @@ module.exports = {
             } catch (err) {
                 throw new Error(err);
             }
+        },
+        async getAuditorById(_, { auditorId }) {
+            try {
+                const auditor = await Auditor.findOne({ auditorId: auditorId });
+                if (auditor) {
+                    return auditor;
+                } else {
+                    throw new Error('Auditor not found.');
+                }
+            } catch (err) {
+                throw new Error(err);
+            }
         }
     }
 }
