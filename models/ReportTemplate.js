@@ -17,7 +17,24 @@ const reportTemplateSchema = new Schema({
         },
         status: Number
     },
-    checklist: Array
+    checklist: [{
+        category: String,
+        weightage: Number,
+        subcategories: [{
+            subcategory: String,
+            subcatScore: Number,
+            lineItems: [{
+                lineItem: String,
+                complied: Number,
+                images: [{
+                    nonCompliances: [String],
+                    nonComplRemarks: String,
+                    rectifications: [String],
+                    rectRemarks: String
+                }]
+            }]
+        }]
+    }]
 });
 
 module.exports = model('ReportTemplate', reportTemplateSchema, 'reportTemplates');

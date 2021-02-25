@@ -9,22 +9,38 @@ module.exports = gql`
     }
 
     type ExtensionObject {
-        date: String!
-        remarks: String!
+        date: String
+        remarks: String
     }
 
     type Extension {
         proposed: ExtensionObject
         final: ExtensionObject
+        status: String
+    }
+
+    type LineItemImage {
+        nonCompliances: [String],
+        nonComplRemarks: String,
+        rectifications: [String],
+        rectRemarks: String
+    }
+
+    type LineItem {
+        lineItem: String,
+        complied: Int,
+        images: [LineItemImage]
     }
 
     type Subcategory {
-        subcategory: String!
+        subcategory: String
+        subcatScore: Float
+        lineItems: [LineItem]
     }
 
     type Checklist {
-        category: String!
-        weightage: Int!
+        category: String
+        weightage: Int
         subcategories: [Subcategory]
     }
 

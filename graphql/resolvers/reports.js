@@ -5,7 +5,6 @@ module.exports = {
         async getReportTemplate(_, { templateType }) {
             try {
                 const reportTemplate = await ReportTemplate.findOne({ templateType: templateType });
-                console.log(reportTemplate);
                 if (reportTemplate) {
                     return reportTemplate;
                 } else {
@@ -18,7 +17,6 @@ module.exports = {
         async getAllReportTemplates() {
             try {
                 const templates = await ReportTemplate.find();
-                console.log(templates);
                 if (templates) {
                     return templates;
                 } else {
