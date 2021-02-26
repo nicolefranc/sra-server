@@ -1,10 +1,10 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema } = require("mongoose");
 
 const auditorSchema = new Schema({
-    auditorId: String,
-    name: String,
-    email: String,
-    tenants: [String],
+  username: String,
+  password: String,
+  email: String,
+  createdAt: String,
 });
 
-module.exports = model('Auditor', auditorSchema);
+module.exports = model("Auditor", auditorSchema);
