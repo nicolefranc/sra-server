@@ -1,9 +1,10 @@
-import { model, Schema } from 'mongoose';
+const { model, Schema } =require('mongoose') ;
 
 const tenantSchema = new Schema({
-    tenantId: String,
-    name: String,
+    username: String, //to be replaced with TenantID
+    password: String,
     email: String,
+    createdAt: String,
 });
 
-export default model('Tenant', tenantSchema);
+module.exports = model('Tenant', tenantSchema);

@@ -9,7 +9,7 @@ const {
 } = require("../../util/validators");
 
 dotenv.config();
-const Auditor = require("../../models/Auditor");
+const Tenant = require("../../models/Tenant");
 
 function generateToken(user) {
   return jwt.sign(
@@ -25,24 +25,24 @@ function generateToken(user) {
 
 module.exports = {
   Query: {
-    async getAllAuditors() {
+    async getAllTenants() {
       try {
-        const auditors = await Auditor.find();
-        return auditors;
+        const Tenants = await Tenant.find();
+        return Tenants;
       } catch (err) {
         throw new Error(err);
       }
     },
   },
   Mutation: {
-    async loginAuditor(_, { username, password }) {
+    async loginTenant(_, { username, password }) {
       const { errors, valid } = validateLoginInput(username, password);
 
       if (!valid) {
         throw new UserInputError("Errors", { errors });
       }
 
-      const user = await Auditor.findOne({ username });
+      const user = await Tenant.findOne({ username });
 
       if (!user) {
         errors.general = "User not found";
@@ -63,7 +63,7 @@ module.exports = {
         token,
       };
     },
-    async registerAuditor(
+    async registerTenant(
       _,
       { registerInput: { username, password, confirmPassword, email } }
     ) {
@@ -78,7 +78,7 @@ module.exports = {
         throw new UserInputError("Errors", { errors });
       }
       // TODO: Make sure user doesnt already exist
-      const user = await Auditor.findOne({ username });
+      const user = await Tenant.findOne({ username });
       if (user) {
         throw new UserInputError("Username is taken", {
           errors: {
@@ -89,7 +89,7 @@ module.exports = {
       // hash password and create an auth token
       password = await bcrypt.hash(password, 12);
 
-      const newUser = new Auditor({
+      const newUser = new Tenant({
         email,
         username,
         password,
