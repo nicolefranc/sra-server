@@ -1,10 +1,13 @@
 const { model, Schema } =require('mongoose') ;
 
 const tenantSchema = new Schema({
-    username: String, //to be replaced with TenantID
-    password: String,
+    tenantId: String,
+    name: String,
     email: String,
+    password: String,
+    token: String,
     createdAt: String,
 });
 
 module.exports = model('Tenant', tenantSchema);
+
