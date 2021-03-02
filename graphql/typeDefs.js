@@ -19,6 +19,7 @@ module.exports = gql`
     getAllAuditors: [Auditor]
   }
   input RegisterInput {
+    email: String!
     password: String!
     confirmPassword: String!
   }
