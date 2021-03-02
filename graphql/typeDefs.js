@@ -3,24 +3,24 @@ const gql = require("graphql-tag");
 module.exports = gql`
   type Auditor {
     username: String!
-    password: String!
     email: String!
+    password: String!
     createdAt: String!
   }
   type Tenant {
-    username: String!
-    password: String!
+    tenantId: String!
+    name: String!
     email: String!
+    password: String!
+    token: Sring!
     createdAt: String!
   }
   type Query {
     getAllAuditors: [Auditor]
   }
   input RegisterInput {
-    username: String!
     password: String!
     confirmPassword: String!
-    email: String!
   }
   type Mutation {
     registerAuditor(registerInput: RegisterInput): Auditor!
@@ -31,4 +31,4 @@ module.exports = gql`
 
 `;
 
-//RegisterInput : currently has 4 fields, but yet to decide on the way that registration should work
+//RegisterInput : 2 inputs because only email and name is already created and stored by the creator

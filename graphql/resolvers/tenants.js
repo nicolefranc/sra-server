@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken");
 const { UserInputError } = require("apollo-server");
 const dotenv = require("dotenv");
 
+const { v4: uuidv4 } = require('uuid');
+uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
+
 const {
   validateRegisterInput,
   validateLoginInput,
@@ -65,12 +68,10 @@ module.exports = {
     },
     async registerTenant(
       _,
-      { registerInput: { username, password, confirmPassword, email } }
+      { registerInput: { password, confirmPassword } }
     ) {
       // Validate user data
       const { valid, errors } = validateRegisterInput(
-        username,
-        email,
         password,
         confirmPassword
       );
