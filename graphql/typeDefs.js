@@ -2,32 +2,50 @@ const gql = require("graphql-tag");
 
 module.exports = gql`
   type Auditor {
-    username: String!
-    email: String!
-    password: String!
-    createdAt: String!
-  }
-  type Tenant {
-    tenantId: String!
+    auditorId: String,
+    role: String!
+    institution: [String!]!
     name: String!
     email: String!
     password: String!
-    token: Sring!
-    createdAt: String!
+    token: String
   }
+
+  type Tenant {
+    tenantId: String!
+    name: String!
+    institution: String!
+    email: String!
+    password: String!
+    createdAt: String!
+    activated: String!
+    token: String
+  }
+
   type Query {
     getAllAuditors: [Auditor]
   }
+
+  input CreateInput {
+    tenantId: String!
+    name: String!
+    institution: String!
+  }
+
   input RegisterInput {
+    regToken: String!
     email: String!
     password: String!
     confirmPassword: String!
   }
+
   type Mutation {
+    createAuditor(createInput: CreateInput): Auditor!
     registerAuditor(registerInput: RegisterInput): Auditor!
-    loginAuditor(username: String!, password: String!): Auditor!
+    loginAuditor(email: String!, password: String!): Auditor!
+    createTenant(createInput: CreateInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
-    loginTenant(username: String!, password: String!): Tenant!
+    loginTenant(email: String!, password: String!): Tenant!
   }
 
 `;

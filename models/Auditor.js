@@ -1,10 +1,13 @@
 const { model, Schema } = require("mongoose");
 
 const auditorSchema = new Schema({
-  username: String,
-  password: String,
+  auditorId: String,
+  name: String,
+  institution: [String],
   email: String,
+  password: String,
   createdAt: String,
+  activated: Boolean
 });
 
 module.exports = model("Auditor", auditorSchema);

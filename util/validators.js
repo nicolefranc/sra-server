@@ -1,12 +1,37 @@
+module.exports.validateCreateInput = (
+  tenantId,
+  name,
+  institution
+) => {
+  const errors = {};
+  if (name === '') {
+    errors.name = 'name must not be empty';
+  }
+  if (tenantId === '') {
+    errors.id = 'id must not be empty';
+  }
+  if (institution === '') {
+      errors.institution = 'institution must not be empty';
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1
+  };
+};
+
+
+
+// validateRgisterInput to ensure email is a valid email.
 module.exports.validateRegisterInput = (
   email,
   password,
   confirmPassword
 ) => {
   const errors = {};
-  if (username.trim() === '') {
-    errors.username = 'Username must not be empty';
-  }
+  // if (username.trim() === '') {
+  //   errors.username = 'Username must not be empty';
+  // }
   if (email.trim() === '') {
     errors.email = 'Email must not be empty';
   } else {
@@ -27,15 +52,14 @@ module.exports.validateRegisterInput = (
   };
 };
 
-module.exports.validateLoginInput = (username, password) => {
+module.exports.validateLoginInput = (email, password) => {
   const errors = {};
-  if (username.trim() === '') {
-    errors.username = 'Username must not be empty';
+  if (email.trim() === '') {
+    errors.email = 'Username must not be empty';
   }
   if (password.trim() === '') {
     errors.password = 'Password must not be empty';
   }
-
   return {
     errors,
     valid: Object.keys(errors).length < 1
