@@ -41,11 +41,12 @@ module.exports = {
       if (!valid) {
         throw new UserInputError("Errors", { errors }); // throw error if input is empty
       }
-      const tenant = await Tenant.findOne({ email }); // mongoose call to find tenant by email
+      const tenant = await Tenant.findOne({email }); // mongoose call to find tenant by email
       if (!tenant) {
         errors.general = "Tenant not found";
         throw new UserInputError("Tenant not found", { errors }); // throw error if user not found
       }
+      console.log("Tenant ID is : ", tenant.tenantId)
       const match = await bcrypt.compare(password, tenant.password); // compare the value of the hashed password
       if (!match) {
         errors.general = "Wrong crendetials";
@@ -101,11 +102,11 @@ module.exports = {
 
     async createTenant(
       _,
-      { createInput: { tenantId, name, institution } }
+      { createInput: { id, name, institution } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateInput(
-        tenantId,
+        id,
         name,
         institution
       );
@@ -126,7 +127,7 @@ module.exports = {
 
 
       const newUser = new Tenant({
-        tenantId,
+        tenantId: id,
         name,
         institution,
         email: "",

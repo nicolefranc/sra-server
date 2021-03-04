@@ -4,10 +4,12 @@ module.exports = gql`
   type Auditor {
     auditorId: String,
     role: String!
-    institution: [String!]!
+    institutions: [String!]!
     name: String!
     email: String!
     password: String!
+    createdAt: String!
+    activated: String!
     token: String
   }
 
@@ -24,10 +26,11 @@ module.exports = gql`
 
   type Query {
     getAllAuditors: [Auditor]
+    getAllTenants: [Tenant]
   }
 
   input CreateInput {
-    tenantId: String!
+    id: String!
     name: String!
     institution: String!
   }

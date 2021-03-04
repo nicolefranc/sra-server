@@ -1,16 +1,16 @@
 module.exports.validateCreateInput = (
-  tenantId,
+  id,
   name,
   institution
 ) => {
   const errors = {};
-  if (name === '') {
+  if (name.trim() === '') {
     errors.name = 'name must not be empty';
   }
-  if (tenantId === '') {
+  if (id.trim() === '') {
     errors.id = 'id must not be empty';
   }
-  if (institution === '') {
+  if (institution.trim() === '') {
       errors.institution = 'institution must not be empty';
   }
 

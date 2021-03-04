@@ -6,17 +6,17 @@ const dotenv = require("dotenv");
 const {
   validateRegisterInput,
   validateLoginInput,
+  validateCreateInput
 } = require("../../util/validators");
 
 dotenv.config();
 const Auditor = require("../../models/Auditor");
 
-function generateToken(user) {
+function generateToken(auditor) {
   return jwt.sign(
     {
-      id: user.id,
-      email: user.email,
-      username: user.username,
+      id: auditor.auditorId,
+      name: auditor.name
     },
     process.env.SECRET_KEY,
     { expiresIn: "1h" }
@@ -27,83 +27,121 @@ module.exports = {
   Query: {
     async getAllAuditors() {
       try {
-        const auditors = await Auditor.find();
-        return auditors;
+        const Auditors = await Auditor.find();
+        return Auditors;
       } catch (err) {
         throw new Error(err);
       }
     },
   },
   Mutation: {
-    async loginAuditor(_, { username, password }) {
-      const { errors, valid } = validateLoginInput(username, password);
-
+    async loginAuditor(_, { email, password }) {
+      const { errors, valid } = validateLoginInput(email, password); // checks whether input is empty
       if (!valid) {
-        throw new UserInputError("Errors", { errors });
+        throw new UserInputError("Errors", { errors }); // throw error if input is empty
       }
-
-      const user = await Auditor.findOne({ username });
-
-      if (!user) {
-        errors.general = "User not found";
-        throw new UserInputError("User not found", { errors });
+      const auditor = await Auditor.findOne({email }); // mongoose call to find auditor by email
+      if (!auditor) {
+        errors.general = "Auditor not found";
+        throw new UserInputError("Auditor not found", { errors }); // throw error if user not found
       }
-
-      const match = await bcrypt.compare(password, user.password);
+      console.log(auditor.id)
+      const match = await bcrypt.compare(password, auditor.password); // compare the value of the hashed password
       if (!match) {
         errors.general = "Wrong crendetials";
-        throw new UserInputError("Wrong crendetials", { errors });
+        throw new UserInputError("Wrong crendetials", { errors }); //passwords do not match
       }
-
-      const token = generateToken(user);
-
+      const token = generateToken(auditor); // generates token upon successful verification
       return {
-        ...user._doc,
-        id: user._id,
+        ...auditor._doc, //basically show everything?
         token,
       };
     },
+
     async registerAuditor(
       _,
-      { registerInput: { username, password, confirmPassword, email } }
+      { registerInput: { regToken, email, password, confirmPassword } }
     ) {
-      // Validate user data
-      const { valid, errors } = validateRegisterInput(
-        username,
-        email,
-        password,
-        confirmPassword
-      );
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
-      // TODO: Make sure user doesnt already exist
-      const user = await Auditor.findOne({ username });
-      if (user) {
-        throw new UserInputError("Username is taken", {
+      // Validate user data by checking whether email is empty, valid , and whether passwords match
+      const { valid, errors } = validateRegisterInput(email,password,confirmPassword);
+
+      if (!valid) {throw new UserInputError("Errors", { errors });}
+      
+      password = await bcrypt.hash(password, 12);
+
+      var decoded = jwt.verify(regToken, process.env.SECRET_KEY);
+
+      console.log(decoded.id);
+
+      const auditorUpdates = {
+        email: email,
+        password: password,
+        activated: true
+      };
+
+      // Makes sure email doesnt already exist in the database
+      const auditor = await Auditor.findOneAndUpdate({auditorId: decoded.id},auditorUpdates,{new: true}); 
+
+      if (!auditor) { // if no auditor found in database
+        throw new UserInputError("no auditor found", {
           errors: {
-            username: "This username is taken",
+            email: "no auditor found",
           },
         });
       }
+
       // hash password and create an auth token
-      password = await bcrypt.hash(password, 12);
+      const token = generateToken(auditor);
+
+      return {
+        ...auditor._doc, //basically show everything?
+        token,
+      };
+    },
+
+    async createAuditor(
+      _,
+      { createInput: { id, name, institution } }
+    ) {
+      // Validate user data by checking whether email is empty, valid , and whether passwords match
+      const { valid, errors } = validateCreateInput(
+        id,
+        name,
+        institution
+      );
+
+      if (!valid) { // ensure that 
+        throw new UserInputError("Errors", { errors });
+      }
+      // Makes sure email doesnt already exist in the database
+      const auditor = await Auditor.findOne({ name }); //'findone' to go to mongodb to check
+      if (auditor) { // if auditor found in database
+        throw new UserInputError("Email is already taken", {
+          errors: {
+            name: "This email is taken",
+            id: "This email is taken",
+          },
+        });
+      }
+
 
       const newUser = new Auditor({
-        email,
-        username,
-        password,
+        auditorId: id,
+        name,
+        institutions: [institution],
+        email: "",
+        password: "",
         createdAt: new Date().toISOString(),
+        activated: false
       });
 
       const res = await newUser.save();
 
-      const token = generateToken(res);
+      const token = generateToken(res)
 
       return {
         ...res._doc,
-        id: res._id,
-        token,
+        token
       };
     },
   },

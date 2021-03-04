@@ -3,7 +3,7 @@ const { model, Schema } = require("mongoose");
 const auditorSchema = new Schema({
   auditorId: String,
   name: String,
-  institution: [String],
+  institutions: [String],
   email: String,
   password: String,
   createdAt: String,
