@@ -1,7 +1,6 @@
 const { model, Schema } =require('mongoose') ;
 
 const tenantSchema = new Schema({ //creates a mongoose schema
-    tenantId: String,
     name: String,
     institution: String,
     email: String,

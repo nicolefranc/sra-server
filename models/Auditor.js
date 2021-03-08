@@ -1,8 +1,8 @@
 const { model, Schema } = require("mongoose");
 
 const auditorSchema = new Schema({
-  auditorId: String,
   name: String,
+  role: String,
   institutions: [String],
   email: String,
   password: String,

@@ -54,6 +54,7 @@ module.exports = {
       const token = generateToken(auditor); // generates token upon successful verification
       return {
         ...auditor._doc, //basically show everything?
+        id: auditor._id,
         token,
       };
     },
@@ -95,17 +96,17 @@ module.exports = {
 
       return {
         ...auditor._doc, //basically show everything?
+        id: auditor._id,
         token,
       };
     },
 
     async createAuditor(
       _,
-      { createInput: { id, name, institution } }
+      { createInput: { name, role, institution } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateInput(
-        id,
         name,
         institution
       );
@@ -116,18 +117,18 @@ module.exports = {
       // Makes sure email doesnt already exist in the database
       const auditor = await Auditor.findOne({ name }); //'findone' to go to mongodb to check
       if (auditor) { // if auditor found in database
-        throw new UserInputError("Email is already taken", {
+        throw new UserInputError("name is already taken", {
           errors: {
-            name: "This email is taken",
-            id: "This email is taken",
+            name: "This name is taken",
+            id: "This name is taken",
           },
         });
       }
 
 
       const newUser = new Auditor({
-        auditorId: id,
         name,
+        role,
         institutions: [institution],
         email: "",
         password: "",
@@ -141,6 +142,7 @@ module.exports = {
 
       return {
         ...res._doc,
+        id: res._id,
         token
       };
     },

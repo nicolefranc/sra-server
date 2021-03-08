@@ -2,7 +2,7 @@ const gql = require("graphql-tag");
 
 module.exports = gql`
   type Auditor {
-    auditorId: String,
+    id: ID!
     role: String!
     institutions: [String!]!
     name: String!
@@ -14,7 +14,7 @@ module.exports = gql`
   }
 
   type Tenant {
-    tenantId: String!
+    tenantId: ID!
     name: String!
     institution: String!
     email: String!
@@ -30,9 +30,9 @@ module.exports = gql`
   }
 
   input CreateInput {
-    id: String!
     name: String!
     institution: String!
+    role: String!
   }
 
   input RegisterInput {
