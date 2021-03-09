@@ -42,7 +42,7 @@ module.exports = {
       }
       const auditor = await Auditor.findOne({email }); // mongoose call to find auditor by email
       if (!auditor) {
-        errors.general = "Auditor not found";
+        errors.general = "Auditor does not exist";
         throw new UserInputError("Auditor not found", { errors }); // throw error if user not found
       }
       console.log(auditor.id)
