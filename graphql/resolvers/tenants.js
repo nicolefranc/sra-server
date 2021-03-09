@@ -16,7 +16,7 @@ const Tenant = require("../../models/Tenant");
 function generateToken(tenant) {
   return jwt.sign(
     {
-      id: tenant.tenantId,
+      id: tenant._id,
       name: tenant.name
     },
     process.env.SECRET_KEY,
@@ -46,7 +46,7 @@ module.exports = {
         errors.general = "Tenant not found";
         throw new UserInputError("Tenant not found", { errors }); // throw error if user not found
       }
-      console.log("Tenant ID is : ", tenant.tenantId)
+      console.log("Tenant ID is : ", tenant._id)
       const match = await bcrypt.compare(password, tenant.password); // compare the value of the hashed password
       if (!match) {
         errors.general = "Wrong crendetials";
@@ -55,6 +55,7 @@ module.exports = {
       const token = generateToken(tenant); // generates token upon successful verification
       return {
         ...tenant._doc, //basically show everything?
+        id: tenant._id,
         token,
       };
     },
@@ -81,7 +82,7 @@ module.exports = {
       };
 
       // Makes sure email doesnt already exist in the database
-      const tenant = await Tenant.findOneAndUpdate({tenantId: decoded.id},tenantUpdates,{new: true}); 
+      const tenant = await Tenant.findOneAndUpdate({_id: decoded.id},tenantUpdates,{new: true}); 
 
       if (!tenant) { // if no tenant found in database
         throw new UserInputError("no tenant found taken", {
@@ -96,17 +97,17 @@ module.exports = {
 
       return {
         ...tenant._doc, //basically show everything?
+        id: tenant._id,
         token,
       };
     },
 
     async createTenant(
       _,
-      { createInput: { id, name, institution } }
+      { name, institution  }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateInput(
-        id,
         name,
         institution
       );
@@ -117,9 +118,9 @@ module.exports = {
       // Makes sure email doesnt already exist in the database
       const tenant = await Tenant.findOne({ name }); //'findone' to go to mongodb to check
       if (tenant) { // if tenant found in database
-        throw new UserInputError("Email is already taken", {
+        throw new UserInputError("name is already taken", {
           errors: {
-            name: "This email is taken",
+            name: "This name is taken",
             id: "This email is taken",
           },
         });
@@ -127,7 +128,6 @@ module.exports = {
 
 
       const newUser = new Tenant({
-        tenantId: id,
         name,
         institution,
         email: "",
@@ -142,6 +142,7 @@ module.exports = {
 
       return {
         ...res._doc,
+        id: res._id,
         token
       };
     },

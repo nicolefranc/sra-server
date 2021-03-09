@@ -14,7 +14,7 @@ module.exports = gql`
   }
 
   type Tenant {
-    tenantId: ID!
+    id: ID!
     name: String!
     institution: String!
     email: String!
@@ -46,7 +46,7 @@ module.exports = gql`
     createAuditor(createInput: CreateInput): Auditor!
     registerAuditor(registerInput: RegisterInput): Auditor!
     loginAuditor(email: String!, password: String!): Auditor!
-    createTenant(createInput: CreateInput): Tenant!
+    createTenant(name: String!,institution:String!): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
   }

@@ -15,7 +15,7 @@ const Auditor = require("../../models/Auditor");
 function generateToken(auditor) {
   return jwt.sign(
     {
-      id: auditor.auditorId,
+      id: auditor._id,
       name: auditor.name
     },
     process.env.SECRET_KEY,
