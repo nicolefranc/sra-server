@@ -35,7 +35,7 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getTenantsByInstitution(_,institution) {
+    async getTenantsByInstitution(_, institution) {
       try {
         console.log(institution);
         const Tenants = await Tenant.find(institution);
@@ -44,17 +44,16 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getTenantsByAuditor(_,req) {
+    async getTenantsByAuditor(_, req) {
       try {
         console.log(req.auditorId);
         const Auditors = await Auditor.findOne({ _id: req.auditorId });
         console.log(Auditors.institutions);
         try {
           const Tenants = await Tenant.find({
-            institution: {$in: Auditors.institutions}
+            institution: { $in: Auditors.institutions },
           });
           return Tenants;
-
         } catch (err) {
           throw new Error(err);
         }
@@ -62,25 +61,23 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getTenantById(id) {
+    async getTenantById(_, req) {
       try {
-        const Tenants = await Tenant.findOne({ id: id });
+        const Tenants = await Tenant.findOne({ _id: req.id });
         console.log(Tenants);
         return Tenants;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async getTenantByEmail({emailadd}) {
+    async getTenantByEmail(_, req) {
       try {
-        
-        const Tenants = await Tenant.find({ email: emailadd });
-        console.log(Tenants);
+        const Tenants = await Tenant.findOne({ email: req.email });
         return Tenants;
       } catch (err) {
         throw new Error(err);
       }
-    }
+    },
   },
   Mutation: {
     async loginTenant(_, { email, password }) {
@@ -162,7 +159,7 @@ module.exports = {
 
     async createTenant(_, { name, institution, type }) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      const { valid, errors } = validateCreateInput(name, institution,type);
+      const { valid, errors } = validateCreateInput(name, institution, type);
 
       if (!valid) {
         // ensure that
