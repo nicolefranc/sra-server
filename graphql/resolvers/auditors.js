@@ -80,8 +80,8 @@ module.exports = {
         activated: true
       };
 
-      // Makes sure email doesnt already exist in the database
-      const auditor = await Auditor.findOneAndUpdate({auditorId: decoded.id},auditorUpdates,{new: true}); 
+      // Makes sure id exists in the database
+      const auditor = await Auditor.findOneAndUpdate({_id: decoded.id},auditorUpdates,{new: true}); 
 
       if (!auditor) { // if no auditor found in database
         throw new UserInputError("no auditor found", {

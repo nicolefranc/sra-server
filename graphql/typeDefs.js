@@ -27,8 +27,13 @@ module.exports = gql`
   type Query {
     getAllAuditors: [Auditor]
     getAllTenants: [Tenant]
+    getAuditorsByInstitution(institution: String!): [Auditor]
+    getTenantsByInstitution(institution: String!): [Tenant]
+    getTenantsByAuditor(auditorId: String!): [Tenant]
     getAuditorByEmail(email: String!): Auditor
     getTenantByEmail(email: String!): Tenant
+    getAuditorById(id: String!): Auditor
+    getTenantById(id: String!): Tenant
   }
 
   input CreateInput {
