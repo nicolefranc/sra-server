@@ -48,7 +48,6 @@ module.exports = {
       try {
         console.log(req.auditorId);
         const Auditors = await Auditor.findOne({ _id: req.auditorId });
-        console.log(Auditors.institutions);
         try {
           const Tenants = await Tenant.find({
             institution: { $in: Auditors.institutions },
@@ -64,7 +63,6 @@ module.exports = {
     async getTenantById(_, req) {
       try {
         const Tenants = await Tenant.findOne({ _id: req.id });
-        console.log(Tenants);
         return Tenants;
       } catch (err) {
         throw new Error(err);
