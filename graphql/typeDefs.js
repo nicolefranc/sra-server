@@ -17,6 +17,7 @@ module.exports = gql`
     id: ID!
     name: String!
     institution: String!
+    types: [String!]
     email: String!
     password: String!
     createdAt: String!
@@ -24,11 +25,16 @@ module.exports = gql`
     token: String
   }
 
-
-  input CreateInput {
+  input CreateAuditorInput {
     name: String!
     institution: String!
     role: String!
+  }
+
+  input CreateTenantInput {
+    name: String!
+    institution: String!
+    types: [String!]
   }
 
   input RegisterInput {
@@ -107,25 +113,33 @@ module.exports = gql`
     checklist: [IChecklist]
   }
 
+
+
   type Query {
     getAllAuditors: [Auditor]
+    getAuditorsByInstitution(institution: String!): [Auditor]
+    getAuditorByEmail(email: String!): Auditor
+    getAuditorById(id: String!): Auditor
     getAllTenants: [Tenant]
+    getTenantsByInstitution(institution: String!): [Tenant]
+    getTenantsByAuditor(auditorId: String!): [Tenant]
+    getTenantByEmail(email: String!): Tenant
+    getTenantById(id: String!): Tenant
 
     getAllReportTemplates: [Report]
     getReportTemplate(templateType: String!): Report
   }
 
   type Mutation {
-    createAuditor(createInput: CreateInput): Auditor!
+    createAuditor(createAuditorInput: CreateAuditorInput): Auditor!
     registerAuditor(registerInput: RegisterInput): Auditor!
     loginAuditor(email: String!, password: String!): Auditor!
-    createTenant(name: String!,institution:String!): Tenant!
+    createTenant(createTenantInput: CreateTenantInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
 
     createReportTemplate(body: TemplateInput!): Report!
   }
-
 `;
 
 //RegisterInput : 2 inputs because only email and name is already created and stored by the creator

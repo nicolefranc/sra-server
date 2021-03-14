@@ -1,10 +1,38 @@
-module.exports.validateCreateInput = (
+module.exports.validateCreateTenantInput = (
   name,
-  institution
+  institution,
+  types
+) => {
+  console.log(name);
+  const errors = {};
+  if (name.trim() === '') {
+    errors.name = 'name must not be empty';
+  }
+  if (institution.trim() === '') {
+      errors.institution = 'institution must not be empty';
+  }
+  if (types.length === 0) {
+      errors.type = 'type must not be empty';
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1
+  };
+};
+
+module.exports.validateCreateAuditorInput = (
+  name,
+  role,
+  institution,
+  
 ) => {
   const errors = {};
   if (name.trim() === '') {
     errors.name = 'name must not be empty';
+  }
+  if (role.trim() === '') {
+    errors.role = 'name must not be empty';
   }
   if (institution.trim() === '') {
       errors.institution = 'institution must not be empty';
