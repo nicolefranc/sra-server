@@ -28,7 +28,7 @@ module.exports = gql`
 
     type LineItem {
         lineItem: String,
-        complied: Int,
+        complied: Boolean,
         images: [LineItemImage]
     }
 
@@ -41,6 +41,7 @@ module.exports = gql`
     type Checklist {
         category: String
         weightage: Int
+        score: Int
         subcategories: [Subcategory]
     }
 
@@ -66,6 +67,7 @@ module.exports = gql`
     input IChecklist {
         category: String!
         weightage: Int!
+        score: Int!
         subcategories: [ISubcategories]
     }
 

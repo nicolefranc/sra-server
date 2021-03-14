@@ -21,12 +21,13 @@ const reportTemplateSchema = new Schema({
     checklist: [{
         category: String,
         weightage: Number,
+        score: Number,
         subcategories: [{
             subcategory: String,
-            subcatScore: { type: Number, default: 0 },
+            subcatScore: { type: Number, default: 100 },
             lineItems: [{
                 lineItem: String,
-                complied: { type: Number, default: 0 },
+                complied: { type: Boolean, default: true },
                 images: [{
                     nonCompliances: { type: [String], default: [] },
                     nonComplRemarks: { type: String, default: '' },

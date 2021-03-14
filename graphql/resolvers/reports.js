@@ -42,7 +42,7 @@ module.exports = {
                 if (template) {
                     return template;
                 } else {
-                    throw new Error('Add template unsuccesful.');
+                    throw new Error('Add template unsuccessful.');
                 }
             } catch (err) {
                 throw new Error(err);
