@@ -62,16 +62,16 @@ module.exports = {
     },
     async getTenantById(id) {
       try {
-        const Tenant = await Tenant.findOne({ _id: id });
-        return Tenant;
+        const Tenants = await Tenant.findOne({ id: id });
+        return Tenants;
       } catch (err) {
         throw new Error(err);
       }
     },
     async getTenantByEmail(email) {
       try {
-        const Tenant = await Tenant.findOne({ email: email });
-        return Tenant;
+        const Tenants = await Tenant.findOne({ email: email });
+        return Tenants;
       } catch (err) {
         throw new Error(err);
       }
@@ -155,9 +155,9 @@ module.exports = {
       };
     },
 
-    async createTenant(_, { name, institution }) {
+    async createTenant(_, { name, institution, type }) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      const { valid, errors } = validateCreateInput(name, institution);
+      const { valid, errors } = validateCreateInput(name, institution,type);
 
       if (!valid) {
         // ensure that
@@ -178,6 +178,7 @@ module.exports = {
       const newUser = new Tenant({
         name,
         institution,
+        type,
         email: "",
         password: "",
         createdAt: new Date().toISOString(),

@@ -33,6 +33,30 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getAuditorsByInstitution(institution){
+      try {
+        const Auditors = await Auditor.find({institution: institution});
+        return Auditors;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getAuditorByEmail(email){
+      try {
+        const Auditors = await Auditor.findOne({email: email});
+        return Auditors;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getAuditorById(id){
+      try {
+        const Auditors = await Auditor.findOne({id: id});
+        return Auditors;
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
   },
   Mutation: {
     async loginAuditor(_, { email, password }) {
