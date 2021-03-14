@@ -35,17 +35,19 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getTenantsByInstitution(institution) {
+    async getTenantsByInstitution(_,institution) {
       try {
-        const Tenants = await Tenant.find({ institution: institution });
+        console.log(institution);
+        const Tenants = await Tenant.find(institution);
         return Tenants;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async getTenantsByAuditor(auditorId) {
+    async getTenantsByAuditor(_,req) {
       try {
-        const Auditors = await Auditor.findOne({ id: auditorId });
+        console.log(req.auditorId);
+        const Auditors = await Auditor.findOne({ _id: req.auditorId });
         console.log(Auditors.institutions);
         try {
           const Tenants = await Tenant.find({
@@ -63,19 +65,22 @@ module.exports = {
     async getTenantById(id) {
       try {
         const Tenants = await Tenant.findOne({ id: id });
+        console.log(Tenants);
         return Tenants;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async getTenantByEmail(email) {
+    async getTenantByEmail({emailadd}) {
       try {
-        const Tenants = await Tenant.findOne({ email: email });
+        
+        const Tenants = await Tenant.find({ email: emailadd });
+        console.log(Tenants);
         return Tenants;
       } catch (err) {
         throw new Error(err);
       }
-    },
+    }
   },
   Mutation: {
     async loginTenant(_, { email, password }) {

@@ -33,7 +33,7 @@ module.exports = gql`
     getAllTenants: [Tenant]
     getTenantsByInstitution(institution: String!): [Tenant]
     getTenantsByAuditor(auditorId: String!): [Tenant]
-    getTenantByEmail(email: String!): Tenant
+    getTenantByEmail(emailadd: String!): Tenant
     getTenantById(id: String!): Tenant
   }
 

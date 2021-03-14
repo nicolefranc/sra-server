@@ -132,6 +132,7 @@ module.exports = {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateInput(
         name,
+        role,
         institution
       );
 
