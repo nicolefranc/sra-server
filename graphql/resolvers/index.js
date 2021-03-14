@@ -3,7 +3,8 @@ const tenantResolvers = require('./tenants');
 
 module.exports = {
     Query: {
-        ...auditorsResolvers.Query
+        ...auditorsResolvers.Query,
+        ...tenantResolvers.Query
     },
     Mutation: {
         ...auditorsResolvers.Mutation,
