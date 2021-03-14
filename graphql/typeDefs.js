@@ -25,18 +25,6 @@ module.exports = gql`
     token: String
   }
 
-  type Query {
-    getAllAuditors: [Auditor]
-    getAuditorsByInstitution(institution: String!): [Auditor]
-    getAuditorByEmail(email: String!): Auditor
-    getAuditorById(id: String!): Auditor
-    getAllTenants: [Tenant]
-    getTenantsByInstitution(institution: String!): [Tenant]
-    getTenantsByAuditor(auditorId: String!): [Tenant]
-    getTenantByEmail(email: String!): Tenant
-    getTenantById(id: String!): Tenant
-  }
-
   input CreateAuditorInput {
     name: String!
     institution: String!
@@ -56,6 +44,92 @@ module.exports = gql`
     confirmPassword: String!
   }
 
+
+  type ExtensionObject {
+    date: String
+    remarks: String
+  }
+
+  type Extension {
+    proposed: ExtensionObject
+    final: ExtensionObject
+    status: String
+  }
+
+  type LineItemImage {
+    nonCompliances: [String],
+    nonComplRemarks: String,
+    rectifications: [String],
+    rectRemarks: String
+  }
+
+  type LineItem {
+    lineItem: String,
+    complied: Boolean,
+    images: [LineItemImage]
+  }
+
+  type Subcategory {
+    subcategory: String
+    subcatScore: Float
+    lineItems: [LineItem]
+  }
+
+  type Checklist {
+    category: String
+    weightage: Int
+    score: Int
+    subcategories: [Subcategory]
+  }
+
+  type Report {
+    templateType: String
+    tenantId: String
+    auditorId: String
+    auditDate: String
+    auditScore: Int
+    extension: Extension
+    checklist: [Checklist]
+  }
+
+  input ILineItems {
+    lineItem: String,
+  }
+
+  input ISubcategories {
+    subcategory: String
+    lineItems: [ILineItems]
+  }
+
+  input IChecklist {
+    category: String!
+    weightage: Int!
+    score: Int!
+    subcategories: [ISubcategories]
+  }
+
+  input TemplateInput {
+    templateType: String!
+    checklist: [IChecklist]
+  }
+
+
+
+  type Query {
+    getAllAuditors: [Auditor]
+    getAuditorsByInstitution(institution: String!): [Auditor]
+    getAuditorByEmail(email: String!): Auditor
+    getAuditorById(id: String!): Auditor
+    getAllTenants: [Tenant]
+    getTenantsByInstitution(institution: String!): [Tenant]
+    getTenantsByAuditor(auditorId: String!): [Tenant]
+    getTenantByEmail(email: String!): Tenant
+    getTenantById(id: String!): Tenant
+
+    getAllReportTemplates: [Report]
+    getReportTemplate(templateType: String!): Report
+  }
+
   type Mutation {
     createAuditor(createAuditorInput: CreateAuditorInput): Auditor!
     registerAuditor(registerInput: RegisterInput): Auditor!
@@ -63,6 +137,8 @@ module.exports = gql`
     createTenant(createTenantInput: CreateTenantInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
+
+    createReportTemplate(body: TemplateInput!): Report!
   }
 `;
 
