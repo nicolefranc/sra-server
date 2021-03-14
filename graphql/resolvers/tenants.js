@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateCreateInput,
+  validateCreateTenantInput,
 } = require("../../util/validators");
 
 dotenv.config();
@@ -155,9 +155,10 @@ module.exports = {
       };
     },
 
-    async createTenant(_, { name, institution, type }) {
+    async createTenant(_, {createTenantInput: { name, institution, types }}) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      const { valid, errors } = validateCreateInput(name, institution, type);
+      console.log({ name, institution, types });
+      const { valid, errors } = validateCreateTenantInput(name, institution, types);
 
       if (!valid) {
         // ensure that
@@ -178,7 +179,7 @@ module.exports = {
       const newUser = new Tenant({
         name,
         institution,
-        type,
+        types,
         email: "",
         password: "",
         createdAt: new Date().toISOString(),

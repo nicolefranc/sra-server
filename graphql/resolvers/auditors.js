@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateCreateInput
+  validateCreateAuditorInput
 } = require("../../util/validators");
 
 dotenv.config();
@@ -127,10 +127,10 @@ module.exports = {
 
     async createAuditor(
       _,
-      { createInput: { name, role, institution } }
+      { createAuditorInput: { name, role, institution } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      const { valid, errors } = validateCreateInput(
+      const { valid, errors } = validateCreateAuditorInput(
         name,
         role,
         institution
