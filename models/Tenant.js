@@ -4,6 +4,7 @@ const JSONTransport = require('nodemailer/lib/json-transport');
 const tenantSchema = new Schema({ //creates a mongoose schema
     name: String,
     institution: String,
+    types: [String],
     email: String,
     password: String,
     createdAt: String,

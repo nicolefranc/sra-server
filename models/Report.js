@@ -1,11 +1,23 @@
-import { model, Schema } from 'mongoose';
+const { model, Schema } = require('mongoose');
 
 const reportSchema = new Schema({
+    templateType: String,
     tenantId: String,
     auditorId: String,
-    reportType: String,
-    auditDate: new Date(),
-    dueDate: Date,
+    auditDate: String,
+    auditScore: Number,
+    extension: {
+        proposed: {
+            date: String,
+            remarks: String
+        },
+        final: {
+            date: String,
+            remarks: String
+        },
+        status: Number
+    },
+    checklist: Array
 });
 
-export default model('Report', reportSchema);
+module.exports = model('Report', reportSchema);

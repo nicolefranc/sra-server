@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateCreateInput
+  validateCreateAuditorInput
 } = require("../../util/validators");
 
 dotenv.config();
@@ -33,6 +33,30 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getAuditorsByInstitution(institution){
+      try {
+        const Auditors = await Auditor.find({institution: institution});
+        return Auditors;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getAuditorByEmail(email){
+      try {
+        const Auditors = await Auditor.findOne({email: email});
+        return Auditors;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getAuditorById(id){
+      try {
+        const Auditors = await Auditor.findOne({id: id});
+        return Auditors;
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
   },
   Mutation: {
     async loginAuditor(_, { email, password }) {
@@ -80,8 +104,8 @@ module.exports = {
         activated: true
       };
 
-      // Makes sure email doesnt already exist in the database
-      const auditor = await Auditor.findOneAndUpdate({auditorId: decoded.id},auditorUpdates,{new: true}); 
+      // Makes sure id exists in the database
+      const auditor = await Auditor.findOneAndUpdate({_id: decoded.id},auditorUpdates,{new: true}); 
 
       if (!auditor) { // if no auditor found in database
         throw new UserInputError("no auditor found", {
@@ -103,11 +127,12 @@ module.exports = {
 
     async createAuditor(
       _,
-      { createInput: { name, role, institution } }
+      { createAuditorInput: { name, role, institution } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      const { valid, errors } = validateCreateInput(
+      const { valid, errors } = validateCreateAuditorInput(
         name,
+        role,
         institution
       );
 
