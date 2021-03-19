@@ -23,6 +23,13 @@ module.exports = gql`
     createdAt: String!
     activated: String!
     token: String
+    performance: [Performance]
+  }
+
+  type Performance {
+    month: String!
+    key: String!
+    score: Int!
   }
 
   input CreateAuditorInput {
