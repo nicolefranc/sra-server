@@ -125,10 +125,7 @@ module.exports = {
       };
     },
 
-    async createAuditor(
-      _,
-      { createAuditorInput: { name, role, institution } }
-    ) {
+    async createAuditor(_, { createAuditorInput: { name, role, institution } }) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateAuditorInput(
         name,

@@ -1,23 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const reportTemplateSchema = new Schema({
-    templateType: String,
-    tenantId:  { type: String, default: '' },
-    // TODO: Remove default, change to actual auditor Id
-    auditorId:  { type: String, default: '' },
-    auditDate:  { type: String, default: Date.now },
-    auditScore: { type: Number, default: 0 },
-    extension: {
-        proposed: {
-            date: { type: String, default: '' },
-            remarks: { type: String, default: '' }
-        },
-        final: {
-            date: { type: String, default: '' },
-            remarks: { type: String, default: '' }
-        },
-        status: { type: String, default: '' }
-    },
+    type: { type: String, required: true},
     checklist: [{
         category: String,
         weightage: Number,
@@ -33,10 +17,10 @@ const reportTemplateSchema = new Schema({
                     nonComplRemarks: { type: String, default: '' },
                     rectifications: { type: [String], default: [] },
                     rectRemarks: { type: String, default: '' }
-                }]
-            }]
-        }]
-    }]
+                }] // Images
+            }] // Line Items
+        }] // Subcategories
+    }] // Checklist
 });
 
 module.exports = model('ReportTemplate', reportTemplateSchema, 'reportTemplates');

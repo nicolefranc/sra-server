@@ -1,10 +1,11 @@
+const Report = require('../../models/Report');
 const ReportTemplate = require('../../models/ReportTemplate');
 
 module.exports = {
     Query: {
-        async getReportTemplate(_, { templateType }) {
+        async getReportTemplate(_, { type }) {
             try {
-                const reportTemplate = await ReportTemplate.findOne({ templateType: templateType });
+                const reportTemplate = await ReportTemplate.findOne({ type: type });
                 if (reportTemplate) {
                     return reportTemplate;
                 } else {
@@ -26,6 +27,8 @@ module.exports = {
                 throw new Error(err);
             }
         }
+
+        // Add getReportsByTenant and getReportById
     },
 
     Mutation: {
@@ -43,6 +46,24 @@ module.exports = {
                     return template;
                 } else {
                     throw new Error('Add template unsuccessful.');
+                }
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async createReport(_, { body }) {
+            const newReport = new Report({
+                ...body
+            })
+
+            try {
+                const report = await newReport.save();
+
+                if (report) {
+                    return report;
+                } else {
+                    throw new Error('Creation of report unsuccessful.');
                 }
             } catch (err) {
                 throw new Error(err);
