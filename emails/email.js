@@ -57,6 +57,11 @@ const sendEmail = () =>{
         to: 'currentixer@gmail.com'   ,
         subject: 'testing and testing',
         text: 'test',
+        attachments: [{
+            filename: 'result.pdf',
+            path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
+            contentType: 'aplication/pdf',
+        }]
     };
     
     transporter.sendMail(mailOptions, function(err,data){

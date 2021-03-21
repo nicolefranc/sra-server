@@ -19,6 +19,7 @@ function generateToken(tenant) {
     {
       id: tenant._id,
       name: tenant.name,
+      type: "tenant",
     },
     process.env.SECRET_KEY,
     { expiresIn: "1h" }

@@ -16,7 +16,8 @@ function generateToken(auditor) {
   return jwt.sign(
     {
       id: auditor._id,
-      name: auditor.name
+      name: auditor.name,
+      type: "auditor"
     },
     process.env.SECRET_KEY,
     { expiresIn: "1h" }
