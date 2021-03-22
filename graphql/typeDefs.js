@@ -1,4 +1,4 @@
-const gql = require("graphql-tag");
+const { gql } = require("apollo-server");
 
 module.exports = gql`
   type Auditor {
@@ -128,6 +128,13 @@ module.exports = gql`
     checklist: [IChecklist]!
   }
 
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+    uri: String!
+  }
+
   type Query {
     getAllAuditors: [Auditor]
     getAuditorsByInstitution(institution: String!): [Auditor]
@@ -153,6 +160,9 @@ module.exports = gql`
 
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!
+
+    singleUpload(file: Upload!): File
+    multipleUploads(files: [Upload], id: String!): [File]
   }
 `
 //RegisterInput : 2 inputs because only email and name is already created and stored by the creator
