@@ -90,7 +90,7 @@ module.exports = gql`
   }
 
   type Report {
-    templateType: String
+    type: String
     tenantId: String
     auditorId: String
     auditDate: String
