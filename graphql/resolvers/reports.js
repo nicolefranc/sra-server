@@ -4,10 +4,12 @@ module.exports = {
     Query: {
         async getReportTemplate(_, { templateType }) {
             try {
-                const reportTemplate = await ReportTemplate.findOne({ templateType: templateType });
+                const reportTemplate = await ReportTemplate.findOne({ type: templateType });
                 if (reportTemplate) {
                     return reportTemplate;
                 } else {
+                    console.log("can't find");
+
                     throw new Error('Report template not found.');
                 }
             } catch (err) {
