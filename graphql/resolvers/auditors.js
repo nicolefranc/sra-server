@@ -17,7 +17,7 @@ function generateToken(auditor) {
     {
       id: auditor._id,
       name: auditor.name,
-      type: "auditor"
+      type: auditor.role
     },
     process.env.SECRET_KEY,
     { expiresIn: "1h" }
@@ -128,11 +128,12 @@ module.exports = {
 
     async createAuditor(
       _,
-      { createAuditorInput: { name, role, institution } }
+      { createAuditorInput: { name, email, role, institution } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateAuditorInput(
         name,
+        email,
         role,
         institution
       );
@@ -146,7 +147,14 @@ module.exports = {
         throw new UserInputError("name is already taken", {
           errors: {
             name: "This name is taken",
-            id: "This name is taken",
+          },
+        });
+      }
+      const auditor2 = await Auditor.findOne({ email }); //'findone' to go to mongodb to check
+      if (auditor2) { // if auditor found in database
+        throw new UserInputError("name is already taken", {
+          errors: {
+            email: "This name is taken",
           },
         });
       }
@@ -156,7 +164,7 @@ module.exports = {
         name,
         role,
         institutions: [institution],
-        email: "",
+        email,
         password: "",
         createdAt: new Date().toISOString(),
         activated: false

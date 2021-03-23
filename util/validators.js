@@ -1,7 +1,8 @@
 module.exports.validateCreateTenantInput = (
   name,
+  email,
   institution,
-  types
+  type
 ) => {
   console.log(name);
   const errors = {};
@@ -11,7 +12,7 @@ module.exports.validateCreateTenantInput = (
   if (institution.trim() === '') {
       errors.institution = 'institution must not be empty';
   }
-  if (types.length === 0) {
+  if (type.length === 0) {
       errors.type = 'type must not be empty';
   }
 

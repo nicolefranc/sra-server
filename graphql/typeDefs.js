@@ -17,7 +17,7 @@ module.exports = gql`
     id: ID!
     name: String!
     institution: String!
-    types: [String!]
+    type: [String!]
     email: String!
     password: String!
     createdAt: String!
@@ -34,14 +34,16 @@ module.exports = gql`
 
   input CreateAuditorInput {
     name: String!
+    email: String!
     institution: String!
     role: String!
   }
 
   input CreateTenantInput {
     name: String!
+    email: String!
     institution: String!
-    types: [String!]
+    type: [String!]
   }
 
   input RegisterInput {
