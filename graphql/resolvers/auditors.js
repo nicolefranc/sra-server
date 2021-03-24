@@ -86,10 +86,10 @@ module.exports = {
 
     async registerAuditor(
       _,
-      { registerInput: { regToken, email, password, confirmPassword } }
+      { registerInput: { regToken, password, confirmPassword } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      const { valid, errors } = validateRegisterInput(email,password,confirmPassword);
+      const { valid, errors } = validateRegisterInput(password,confirmPassword);
 
       if (!valid) {throw new UserInputError("Errors", { errors });}
       
@@ -100,7 +100,6 @@ module.exports = {
       console.log(decoded.id);
 
       const auditorUpdates = {
-        email: email,
         password: password,
         activated: true
       };

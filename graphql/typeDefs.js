@@ -48,7 +48,6 @@ module.exports = gql`
 
   input RegisterInput {
     regToken: String!
-    email: String!
     password: String!
     confirmPassword: String!
   }

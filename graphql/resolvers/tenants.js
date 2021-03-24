@@ -12,6 +12,7 @@ const {
 dotenv.config();
 const Tenant = require("../../models/Tenant");
 const Auditor = require("../../models/Auditor");
+const sendRegistrationEmail = require('../../emails/registrationEmail')
 
 // takes in a user as the input and tokenizes the attribute
 function generateToken(tenant) {
@@ -105,11 +106,11 @@ module.exports = {
 
     async registerTenant(
       _,
-      { registerInput: { regToken, email, password, confirmPassword } }
+      { registerInput: { regToken, password, confirmPassword } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
+
       const { valid, errors } = validateRegisterInput(
-        email,
         password,
         confirmPassword
       );
@@ -125,7 +126,6 @@ module.exports = {
       console.log(decoded.id);
 
       const tenantUpdates = {
-        email: email,
         password: password,
         activated: true,
       };
@@ -199,6 +199,9 @@ module.exports = {
       const res = await newUser.save();
 
       const token = generateToken(res);
+
+      sendRegistrationEmail("currentixer@gmail.com", token);
+      // sendRegistrationEmail(email, token);
 
       return {
         ...res._doc,

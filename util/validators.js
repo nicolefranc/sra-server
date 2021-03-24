@@ -15,7 +15,14 @@ module.exports.validateCreateTenantInput = (
   if (type.length === 0) {
       errors.type = 'type must not be empty';
   }
-
+  if (email.trim() === '') {
+    errors.email = 'Email must not be empty';
+  } else {
+    const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+    if (!email.match(regEx)) {
+      errors.email = 'Email must be a valid email address';
+    }
+  }
   return {
     errors,
     valid: Object.keys(errors).length < 1
@@ -25,8 +32,8 @@ module.exports.validateCreateTenantInput = (
 module.exports.validateCreateAuditorInput = (
   name,
   role,
+  email,
   institution,
-  
 ) => {
   const errors = {};
   if (name.trim() === '') {
@@ -37,6 +44,14 @@ module.exports.validateCreateAuditorInput = (
   }
   if (institution.trim() === '') {
       errors.institution = 'institution must not be empty';
+  }
+  if (email.trim() === '') {
+    errors.email = 'Email must not be empty';
+  } else {
+    const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+    if (!email.match(regEx)) {
+      errors.email = 'Email must be a valid email address';
+    }
   }
 
   return {
@@ -49,22 +64,11 @@ module.exports.validateCreateAuditorInput = (
 
 // validateRgisterInput to ensure email is a valid email.
 module.exports.validateRegisterInput = (
-  email,
   password,
   confirmPassword
 ) => {
   const errors = {};
-  // if (username.trim() === '') {
-  //   errors.username = 'Username must not be empty';
-  // }
-  if (email.trim() === '') {
-    errors.email = 'Email must not be empty';
-  } else {
-    const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
-    if (!email.match(regEx)) {
-      errors.email = 'Email must be a valid email address';
-    }
-  }
+
   if (password === '') {
     errors.password = 'Password must not empty';
   } else if (password !== confirmPassword) {
