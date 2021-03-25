@@ -71,7 +71,7 @@ const sendEmail = () =>{
             console.log("email sent!!");
         }
     });
-
+    return null;
 }
 
 

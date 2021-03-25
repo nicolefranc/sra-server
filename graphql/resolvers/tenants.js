@@ -12,6 +12,7 @@ const {
 dotenv.config();
 const Tenant = require("../../models/Tenant");
 const Auditor = require("../../models/Auditor");
+const sendRegistrationEmail = require("../../emails/registrationEmail");
 
 // takes in a user as the input and tokenizes the attribute
 function generateToken(tenant) {
@@ -105,11 +106,11 @@ module.exports = {
 
     async registerTenant(
       _,
-      { registerInput: { regToken, email, password, confirmPassword } }
+      { registerInput: { regToken, password, confirmPassword } }
     ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
+
       const { valid, errors } = validateRegisterInput(
-        email,
         password,
         confirmPassword
       );
@@ -119,13 +120,16 @@ module.exports = {
       }
 
       password = await bcrypt.hash(password, 12);
-
-      var decoded = jwt.verify(regToken, process.env.SECRET_KEY);
+      try {
+        var decoded = jwt.verify(regToken, process.env.SECRET_KEY);
+      } catch (err) {
+        decoded = null;
+        throw new Error(err);
+      }
 
       console.log(decoded.id);
 
       const tenantUpdates = {
-        email: email,
         password: password,
         activated: true,
       };
@@ -156,19 +160,27 @@ module.exports = {
       };
     },
 
-    async createTenant(_, {createTenantInput: { name, institution, types }}) {
+    async createTenant(
+      _,
+      { createTenantInput: { name, email, institution, type } }
+    ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
-      console.log({ name, institution, types });
-      const { valid, errors } = validateCreateTenantInput(name, institution, types);
+      console.log({ name, email, institution, type });
+      const { valid, errors } = validateCreateTenantInput(
+        name,
+        email,
+        institution,
+        type
+      );
 
       if (!valid) {
         // ensure that
         throw new UserInputError("Errors", { errors });
       }
-      // Makes sure email doesnt already exist in the database
-      const tenant = await Tenant.findOne({ name }); //'findone' to go to mongodb to check
-      if (tenant) {
-        // if tenant found in database
+      // Makes sure name doesnt already exist in the database
+      const tenant1 = await Tenant.findOne({ name }); //'findone' to go to mongodb to check
+      if (tenant1) {
+        // if tenant1 found in database
         throw new UserInputError("name is already taken", {
           errors: {
             name: "This name is taken",
@@ -176,12 +188,21 @@ module.exports = {
           },
         });
       }
+      const tenant2 = await Tenant.findOne({ email }); //'findone' to go to mongodb to check
+      if (tenant2) {
+        // if tenant found in database
+        throw new UserInputError("email is already taken", {
+          errors: {
+            email: "This email is taken",
+          },
+        });
+      }
 
       const newUser = new Tenant({
         name,
+        email,
         institution,
-        types,
-        email: "",
+        type,
         password: "",
         createdAt: new Date().toISOString(),
         activated: false,
@@ -189,7 +210,18 @@ module.exports = {
 
       const res = await newUser.save();
 
-      const token = generateToken(res);
+      const token = jwt.sign(
+        {
+          id: newUser._id,
+          name: newUser.name,
+          type: "tenant",
+        },
+        process.env.SECRET_KEY,
+        { expiresIn: "24h" }
+      );;
+
+      // sendRegistrationEmail("currentixer@gmail.com", token);
+      sendRegistrationEmail(email, token);
 
       return {
         ...res._doc,
