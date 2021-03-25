@@ -26,11 +26,14 @@ module.exports = gql`
     performance: [Performance]
   }
 
+<<<<<<< HEAD
   type Performance {
     month: String!
     key: String!
     score: Int!
   }
+=======
+>>>>>>> master
 
   input CreateAuditorInput {
     name: String!
@@ -91,7 +94,11 @@ module.exports = gql`
   }
 
   type Report {
+<<<<<<< HEAD
     type: String
+=======
+    templateType: String
+>>>>>>> master
     tenantId: String
     auditorId: String
     auditDate: String
@@ -121,6 +128,7 @@ module.exports = gql`
     checklist: [IChecklist]
   }
 
+<<<<<<< HEAD
 
 
   type Query {
@@ -133,6 +141,11 @@ module.exports = gql`
     getTenantsByAuditor(auditorId: String!): [Tenant]
     getTenantByEmail(email: String!): Tenant
     getTenantById(id: String!): Tenant
+=======
+  type Query {
+    getAllAuditors: [Auditor]
+    getAllTenants: [Tenant]
+>>>>>>> master
 
     getAllReportTemplates: [Report]
     getReportTemplate(templateType: String!): Report
@@ -145,6 +158,12 @@ module.exports = gql`
     createTenant(createTenantInput: CreateTenantInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
+<<<<<<< HEAD
+=======
+
+    createReportTemplate(body: TemplateInput!): Report!
+  }
+>>>>>>> master
 
     createReportTemplate(body: TemplateInput!): Report!
   }

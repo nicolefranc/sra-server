@@ -1,7 +1,11 @@
 const { model, Schema } = require('mongoose');
 
 const reportTemplateSchema = new Schema({
+<<<<<<< HEAD
     type: String,
+=======
+    templateType: String,
+>>>>>>> master
     tenantId:  { type: String, default: '' },
     // TODO: Remove default, change to actual auditor Id
     auditorId:  { type: String, default: '' },

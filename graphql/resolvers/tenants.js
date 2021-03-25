@@ -12,7 +12,7 @@ const {
 dotenv.config();
 const Tenant = require("../../models/Tenant");
 const Auditor = require("../../models/Auditor");
-const sendRegistrationEmail = require('../../emails/registrationEmail')
+const sendRegistrationEmail = require("../../emails/registrationEmail");
 
 // takes in a user as the input and tokenizes the attribute
 function generateToken(tenant) {
@@ -120,8 +120,12 @@ module.exports = {
       }
 
       password = await bcrypt.hash(password, 12);
-
-      var decoded = jwt.verify(regToken, process.env.SECRET_KEY);
+      try {
+        var decoded = jwt.verify(regToken, process.env.SECRET_KEY);
+      } catch (err) {
+        decoded = null;
+        throw new Error(err);
+      }
 
       console.log(decoded.id);
 
@@ -156,10 +160,18 @@ module.exports = {
       };
     },
 
-    async createTenant(_, {createTenantInput: { name, email, institution, type }}) {
+    async createTenant(
+      _,
+      { createTenantInput: { name, email, institution, type } }
+    ) {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       console.log({ name, email, institution, type });
-      const { valid, errors } = validateCreateTenantInput(name, email, institution, type);
+      const { valid, errors } = validateCreateTenantInput(
+        name,
+        email,
+        institution,
+        type
+      );
 
       if (!valid) {
         // ensure that
@@ -198,10 +210,18 @@ module.exports = {
 
       const res = await newUser.save();
 
-      const token = generateToken(res);
+      const token = jwt.sign(
+        {
+          id: newUser._id,
+          name: newUser.name,
+          type: "tenant",
+        },
+        process.env.SECRET_KEY,
+        { expiresIn: "24h" }
+      );;
 
-      sendRegistrationEmail("currentixer@gmail.com", token);
-      // sendRegistrationEmail(email, token);
+      // sendRegistrationEmail("currentixer@gmail.com", token);
+      sendRegistrationEmail(email, token);
 
       return {
         ...res._doc,
