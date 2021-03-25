@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const reportTemplateSchema = new Schema({
-    type: { type: String, required: true},
+    type: { type: String, required: true },
     checklist: [{
         category: String,
         weightage: Number,

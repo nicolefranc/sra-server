@@ -35,6 +35,15 @@ module.exports = {
 
             console.log(res);
             return res;
+        },
+        deleteUpload: async(_, { filename }) => {
+            console.log(`[SERVER] Deleting ${filename}`);
+            let res = await s3.deleteObject({
+                Key: filename
+            }).promise();
+
+            console.log(res);
+            return true;
         }
     }
 }

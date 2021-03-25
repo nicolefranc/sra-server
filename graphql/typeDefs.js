@@ -36,12 +36,14 @@ module.exports = gql`
     institution: String!
     types: [String!]
   }
-    type LineItemImage {
-      nonCompliances: [String],
-      nonComplRemarks: String,
-      rectifications: [String],
-      rectRemarks: String
-    }
+
+  type LineItemImage {
+    lineItemId: String
+    nonCompliances: [String]
+    nonComplRemarks: String
+    rectifications: [String]
+    rectRemarks: String
+  }
 
   input RegisterInput {
     regToken: String!
@@ -49,19 +51,19 @@ module.exports = gql`
     password: String!
     confirmPassword: String!
   }
-    type LineItem {
-      id: ID
-      lineItem: String,
-      complied: Boolean,
-      images: [LineItemImage]
-    }
 
-    type Subcategory {
-      id: ID
-      subcategory: String
-      subcatScore: Float
-      lineItems: [LineItem]
-    }
+  type LineItem {
+    id: ID
+    lineItem: String,
+    complied: Boolean,
+  }
+
+  type Subcategory {
+    id: ID
+    subcategory: String
+    subcatScore: Float
+    lineItems: [LineItem]
+  }
 
   type ExtensionObject {
     date: String
@@ -83,13 +85,16 @@ module.exports = gql`
   }
 
   type Report {
+    id: ID
     type: String
     tenantId: String
     auditorId: String
     auditDate: String
     auditScore: Int
+    status: String
     extension: Extension
     checklist: [Checklist]
+    images: [ID]
   }
 
   type ReportTemplate {
@@ -98,29 +103,43 @@ module.exports = gql`
   }
 
   input ILineItems {
-    lineItem: String,
+    id: String
+    lineItem: String
+    complied: Boolean
   }
 
   input ISubcategories {
     subcategory: String
+    subcatScore: Float
     lineItems: [ILineItems]
   }
 
   input IChecklist {
     category: String!
     weightage: Int!
-    score: Int!
+    score: Float!
     subcategories: [ISubcategories]
   }
 
+  input IImages {
+    lineItemId: String
+    nonCompliances: [String]
+    nonComplRemarks: String
+    rectifications: [String]
+    rectRemarks: String
+  }
+
+  # input ReportInput {
+  #   type: String!
+  #   tenantId: String!
+  #   auditDate: String
+  #   status: String!
+  #   checklist: [IChecklist]
+  #   images: [IImages]!
+  # }
+
   input ReportInput {
-    type: String!
-    tenantId: String!
-    auditorId: String!
-    auditDate: String
-    auditScore: Int!
-    status: String!
-    checklist: [IChecklist]
+    tenantId: String
   }
 
   input TemplateInput {
@@ -148,6 +167,9 @@ module.exports = gql`
 
     getReportTemplate(type: String!): ReportTemplate!
     getAllReportTemplates: [ReportTemplate]!
+
+    getAllReportsByTenant(tenantId: String!): [Report]
+    getReportById(reportId: String!): Report
   }
 
   type Mutation {
@@ -163,6 +185,7 @@ module.exports = gql`
 
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]
+    deleteUpload(filename: String!): Boolean
   }
 `
 //RegisterInput : 2 inputs because only email and name is already created and stored by the creator

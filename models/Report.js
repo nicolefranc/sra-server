@@ -1,4 +1,4 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema, Types } = require('mongoose');
 
 const reportSchema = new Schema({
     type: String,
@@ -6,7 +6,8 @@ const reportSchema = new Schema({
     // TODO: Remove default, change to actual auditor Id
     auditorId:  { type: String, default: '' },
     auditDate:  { type: String, default: Date.now },
-    auditScore: { type: Number, default: 0 },
+    auditScore: { type: Number, default: 100 },
+    status: { type: String, default: 'audited' },
     extension: {
         proposed: {
             date: { type: String, default: null },
@@ -28,12 +29,7 @@ const reportSchema = new Schema({
             lineItems: [{
                 lineItem: String,
                 complied: { type: Boolean, default: true },
-                images: [{
-                    nonCompliances: { type: [String], default: [] },
-                    nonComplRemarks: { type: String, default: '' },
-                    rectifications: { type: [String], default: [] },
-                    rectRemarks: { type: String, default: '' }
-                }] // Images
+                images: [ { type: Schema.Types.ObjectId, ref: 'Image', default: '' } ] // Images
             }] // Line Items
         }] // Subcategories
     }] // Checklist
