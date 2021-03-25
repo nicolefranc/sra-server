@@ -1,31 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const reportTemplateSchema = new Schema({
-<<<<<<< HEAD
-<<<<<<< HEAD
-    type: String,
-=======
-    templateType: String,
->>>>>>> master
-    tenantId:  { type: String, default: '' },
-    // TODO: Remove default, change to actual auditor Id
-    auditorId:  { type: String, default: '' },
-    auditDate:  { type: String, default: Date.now },
-    auditScore: { type: Number, default: 0 },
-    extension: {
-        proposed: {
-            date: { type: String, default: '' },
-            remarks: { type: String, default: '' }
-        },
-        final: {
-            date: { type: String, default: '' },
-            remarks: { type: String, default: '' }
-        },
-        status: { type: String, default: '' }
-    },
-=======
     type: { type: String, required: true },
->>>>>>> master
     checklist: [{
         category: String,
         weightage: Number,
