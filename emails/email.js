@@ -59,7 +59,8 @@ const sendEmail = () =>{
         text: 'test',
         attachments: [{
             filename: 'result.pdf',
-            path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
+            // path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
+            path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
             contentType: 'aplication/pdf',
         }]
     };
