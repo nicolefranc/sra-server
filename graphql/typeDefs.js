@@ -1,4 +1,4 @@
-const gql = require("graphql-tag");
+const { gql } = require("apollo-server");
 
 module.exports = gql`
   type Auditor {
@@ -26,15 +26,11 @@ module.exports = gql`
     performance: [Performance]
   }
 
-<<<<<<< HEAD
   type Performance {
     month: String!
     key: String!
     score: Int!
   }
-=======
->>>>>>> master
-
   input CreateAuditorInput {
     name: String!
     email: String!
@@ -49,16 +45,44 @@ module.exports = gql`
     type: [String!]
   }
 
+  type LineItemImage {
+    lineItemId: String
+    nonCompliances: [String]
+    nonComplRemarks: String
+    rectifications: [String]
+    rectRemarks: String
+  }
+
   input RegisterInput {
     regToken: String!
     password: String!
     confirmPassword: String!
   }
 
+  type LineItem {
+    id: ID
+    lineItem: String,
+    complied: Boolean,
+  }
+
+  type Subcategory {
+    id: ID
+    subcategory: String
+    subcatScore: Float
+    lineItems: [LineItem]
+  }
 
   type ExtensionObject {
     date: String
     remarks: String
+  }
+  
+  type Checklist {
+    id: ID
+    category: String
+    weightage: Int
+    score: Int
+    subcategories: [Subcategory]
   }
 
   type Extension {
@@ -67,69 +91,75 @@ module.exports = gql`
     status: String
   }
 
-  type LineItemImage {
-    nonCompliances: [String],
-    nonComplRemarks: String,
-    rectifications: [String],
-    rectRemarks: String
-  }
-
-  type LineItem {
-    lineItem: String,
-    complied: Boolean,
-    images: [LineItemImage]
-  }
-
-  type Subcategory {
-    subcategory: String
-    subcatScore: Float
-    lineItems: [LineItem]
-  }
-
-  type Checklist {
-    category: String
-    weightage: Int
-    score: Int
-    subcategories: [Subcategory]
-  }
-
   type Report {
-<<<<<<< HEAD
+    id: ID
     type: String
-=======
-    templateType: String
->>>>>>> master
     tenantId: String
     auditorId: String
     auditDate: String
     auditScore: Int
+    status: String
     extension: Extension
     checklist: [Checklist]
+    images: [ID]
+  }
+
+  type ReportTemplate {
+    type: String!
+    checklist: [Checklist]!
   }
 
   input ILineItems {
-    lineItem: String,
+    id: String
+    lineItem: String
+    complied: Boolean
   }
 
   input ISubcategories {
     subcategory: String
+    subcatScore: Float
     lineItems: [ILineItems]
   }
 
   input IChecklist {
     category: String!
     weightage: Int!
-    score: Int!
+    score: Float!
     subcategories: [ISubcategories]
   }
 
-  input TemplateInput {
-    templateType: String!
-    checklist: [IChecklist]
+  input IImages {
+    lineItemId: String
+    nonCompliances: [String]
+    nonComplRemarks: String
+    rectifications: [String]
+    rectRemarks: String
   }
 
-<<<<<<< HEAD
+  # input ReportInput {
+  #   type: String!
+  #   tenantId: String!
+  #   auditDate: String
+  #   status: String!
+  #   checklist: [IChecklist]
+  #   images: [IImages]!
+  # }
 
+  input ReportInput {
+    tenantId: String
+  }
+
+  input TemplateInput {
+    type: String!
+    checklist: [IChecklist]!
+  }
+
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+    uri: String!
+  }
 
   type Query {
     getAllAuditors: [Auditor]
@@ -141,14 +171,12 @@ module.exports = gql`
     getTenantsByAuditor(auditorId: String!): [Tenant]
     getTenantByEmail(email: String!): Tenant
     getTenantById(id: String!): Tenant
-=======
-  type Query {
-    getAllAuditors: [Auditor]
-    getAllTenants: [Tenant]
->>>>>>> master
 
-    getAllReportTemplates: [Report]
-    getReportTemplate(templateType: String!): Report
+    getReportTemplate(type: String!): ReportTemplate!
+    getAllReportTemplates: [ReportTemplate]!
+
+    getAllReportsByTenant(tenantId: String!): [Report]
+    getReportById(reportId: String!): Report
   }
 
   type Mutation {
@@ -158,15 +186,13 @@ module.exports = gql`
     createTenant(createTenantInput: CreateTenantInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
-<<<<<<< HEAD
-=======
 
-    createReportTemplate(body: TemplateInput!): Report!
+    createReportTemplate(body: TemplateInput!): ReportTemplate!
+    createReport(body: ReportInput!): Report!
+
+    singleUpload(file: Upload!): File
+    multipleUploads(files: [Upload], id: String!): [File]
+    deleteUpload(filename: String!): Boolean
   }
->>>>>>> master
-
-    createReportTemplate(body: TemplateInput!): Report!
-  }
-`;
-
+`
 //RegisterInput : 2 inputs because only email and name is already created and stored by the creator
