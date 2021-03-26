@@ -9,15 +9,15 @@ module.exports = (checklistData) => {
         <title>PDF Result Template</title>
         <style>
            .invoice-box {
-           max-width: 800px;
+           max-width: 100%;
            margin: auto;
            padding: 30px;
            border: 1px solid #eee;
            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
            font-size: 16px;
            line-height: 24px;
-           font-family: 'Helvetica Neue', 'Helvetica',
-           color: #555;
+           font-family: 'Trebuchet MS', sans-serif;
+           font-weight: 100;
            }
            .margin-top {
            margin-top: 50px;
@@ -87,31 +87,36 @@ module.exports = (checklistData) => {
                  <td colspan="2">
                     <table>
                        <tr>
-                          <td class="title"><img  src="https://i2.wp.com/cleverlogos.co/wp-content/uploads/2018/05/reciepthound_1.jpg?fit=800%2C600&ssl=1"
-                             style="width:100%; max-width:156px;"></td>
-                          <td>
-                             Datum: ${`${today.getDate()}. ${
-                               today.getMonth() + 1
-                             }. ${today.getFullYear()}.`}
-                          </td>
+                          <td class="title" style="width:80%; padding-left:40%;"><img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
+                             style="max-width:220px;"></td>
                        </tr>
                     </table>
                  </td>
               </tr>
-              <tr class="information">
+              <tr>
                  <td colspan="2">
                     <table>
+                        <tr>
+                           <td>
+                           Date audited: ${`${today.getDate()}/${
+                              today.getMonth() + 1
+                           }/${today.getFullYear()}`}
+                           </td>
+                        </tr>
                        <tr>
                           <td>
-                             Customer name: ${checklistData.checklistData.somth}
+                             Tenant Id: ${checklistData.checklistData.somth}
                           </td>
-                          <td>
-                             Receipt number: ${checklistData.checklistData.somth}
-                          </td>
+                       </tr>
+                       <tr>
+                        <td>
+                           Auditor(s): ${checklistData.checklistData.somth}
+                        </td>
                        </tr>
                     </table>
                  </td>
               </tr>
+
               <tr class="heading">
                  <td>Hygiene and cleaniness:</td>
                  <td>Score</td>
@@ -125,6 +130,7 @@ module.exports = (checklistData) => {
                  <td>${checklistData.checklistData.item2score}</td>
               </tr>
            </table>
+
            <br />
            <h1 class="justify-center">Total score: ${
              parseInt(checklistData.checklistData.total)
