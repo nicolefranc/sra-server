@@ -1,5 +1,5 @@
 module.exports = (checklistData) => {
-  console.log(checklistData.checklistData.total);
+  console.log(checklistData.total);
   const today = new Date();
   return `
   <!doctype html>
@@ -105,12 +105,12 @@ module.exports = (checklistData) => {
                         </tr>
                        <tr>
                           <td>
-                             Tenant Id: ${checklistData.checklistData.somth}
+                             Tenant Id: ${checklistData.somth}
                           </td>
                        </tr>
                        <tr>
                         <td>
-                           Auditor(s): ${checklistData.checklistData.somth}
+                           Auditor(s): ${checklistData.somth}
                         </td>
                        </tr>
                     </table>
@@ -122,18 +122,18 @@ module.exports = (checklistData) => {
                  <td>Score</td>
               </tr>
               <tr class="item">
-                 <td>First item: ${checklistData.checklistData.item1}</td>
-                 <td>${checklistData.checklistData.item1score}</td>
+                 <td>First item: ${checklistData.item1}</td>
+                 <td>${checklistData.item1score}</td>
               </tr>
               <tr class="item">
-                 <td>Second item: ${checklistData.checklistData.item2}</td>
-                 <td>${checklistData.checklistData.item2score}</td>
+                 <td>Second item: ${checklistData.item2}</td>
+                 <td>${checklistData.item2score}</td>
               </tr>
            </table>
 
            <br />
            <h1 class="justify-center">Total score: ${
-             parseInt(checklistData.checklistData.total)
+             parseInt(checklistData.total)
            }</h1>
         </div>
      </body>

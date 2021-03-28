@@ -4,6 +4,7 @@ const ReportTemplate = require("../../models/ReportTemplate");
 const pdf = require("html-pdf");
 
 const pdfTemplate = require("../../documents");
+const sendEmail = require("../../emails/email");
 
 module.exports = {
     Query: {
@@ -79,6 +80,10 @@ module.exports = {
                 throw new Error(err);
             }
         },
+
+
+
+
     },
 
     Mutation: {
@@ -183,6 +188,27 @@ module.exports = {
                 const report = await newReport.save();
                 if (report) return report;
                 else throw new Error("Creation of report unsuccessful.");
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async sendReportPDFById(_, { reportId, addressee }) {
+            try {
+                const report = await Report.findById(reportId);
+                if (report) {
+                    const report = {somth: "smth", total: 98, item1: "not dusty", item1score: 1, item2: "not wet", item2score: 0};
+                    pdf.create(pdfTemplate(report), {}).toFile(
+                        "result.pdf",
+                        (err) => {
+                            if (err) {
+                                throw new Error(err);
+                            }
+                            console.log("pdf successfully created");
+                        }
+                    );
+                    return await sendEmail(addressee);
+                } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
