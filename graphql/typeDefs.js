@@ -193,7 +193,7 @@ module.exports = gql`
 
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!
-    sendReportPDFById(reportId: String!, addressee: [String!]): String
+    sendReportPDFById(reportId: String!, addressee: [String!], remarks: String!): String
 
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]

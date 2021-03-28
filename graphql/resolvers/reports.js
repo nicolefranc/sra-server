@@ -250,7 +250,7 @@ module.exports = {
             }
         },
 
-        async sendReportPDFById(_, { reportId, addressee }) {
+        async sendReportPDFById(_, { reportId, addressee, remarks }) {
             try {
                 const report = await Report.findById(reportId);
                 if (report) {
@@ -264,7 +264,7 @@ module.exports = {
                             console.log("pdf successfully created");
                         }
                     );
-                    return await sendEmail(addressee);
+                    return await sendEmail(addressee, remarks);
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);

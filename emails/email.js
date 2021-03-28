@@ -39,9 +39,9 @@ const nodemailer = require("nodemailer");
 
 // Gmail
 
-const sendEmail = (addressee) =>{
+const sendEmail = (addressee, remarks) =>{
     
-    console.log("sending email to ", addressee);
+    console.log("sending email to ", addressee, "with remarks", remarks);
 
     let transporter = nodemailer.createTransport({
         service: "gmail",
@@ -58,7 +58,7 @@ const sendEmail = (addressee) =>{
         from: process.env.C2G8EMAIL,
         to: addressee   ,
         subject: 'testing and testing',
-        text: 'test',
+        text: 'Hi, please find the audit attached for viewing. \n\nRemarks: '.concat(remarks),
         attachments: [{
             filename: 'result.pdf',
             path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
