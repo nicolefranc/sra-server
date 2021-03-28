@@ -38,9 +38,30 @@ module.exports = {
         // Add getReportsByTenant and getReportById
         async getAllReportsByTenant(_, { tenantId }) {
             try {
-                const reports = await Report.find()
-                    .where("tenantId")
-                    .equals(tenantId);
+                const reports = await Report.find().populate({
+                        path: 'tenantId',
+                        match: doc => ({ _id: tenantId })
+                    }).populate({
+                        path: 'auditorId'
+                    })
+                if (reports) {
+                    return reports;   
+                } else {
+                    throw new Error('Reports not found.')
+                }
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async getAllReportsByAuditor(_, { auditorId }) {
+            try {
+                const reports = await Report.find().populate({
+                        path: 'auditorId',
+                        match: doc => ({ _id: auditorId })
+                    }).populate({
+                        path: 'tenantId'
+                    })
                 if (reports) {
                     return reports;
                 } else {
@@ -53,7 +74,43 @@ module.exports = {
 
         async getReportById(_, { reportId }) {
             try {
-                const report = await Report.findById(reportId);
+                const report = await Report.findById(reportId)
+                    .populate('tenantId')
+                    .populate('auditorId');
+                if (report) return report;
+                else throw new Error('Report not found.');
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async getReportByAuditorAndStatus(_, { auditorId, status }) {
+            try {
+                console.log(status);
+                const report = await Report.find()
+                    .where('status').equals(status)
+                    .populate({
+                        path: 'auditorId',
+                        match: doc => ({ _id: auditorId })
+                    })
+                    .populate('tenantId');
+                if (report) return report;
+                else throw new Error('Report not found.');
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async getReportByTenantAndStatus(_, { tenantId, status }) {
+            try {
+                console.log(status);
+                const report = await Report.find()
+                    .where('status').equals(status)
+                    .populate({
+                        path: 'tenantId',
+                        match: doc => ({ _id: tenantId })
+                    })
+                    .populate('auditorId');
                 if (report) return report;
                 else throw new Error("Report not found.");
             } catch (err) {

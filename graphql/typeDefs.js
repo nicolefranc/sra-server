@@ -94,8 +94,8 @@ module.exports = gql`
   type Report {
     id: ID
     type: String
-    tenantId: String
-    auditorId: String
+    tenantId: Tenant
+    auditorId: Auditor
     auditDate: String
     auditScore: Int
     status: String
@@ -176,8 +176,11 @@ module.exports = gql`
     getAllReportTemplates: [ReportTemplate]!
 
     getAllReportsByTenant(tenantId: String!): [Report]
+    getAllReportsByAuditor(auditorId: String!): [Report]
     getReportById(reportId: String!): Report
     getReportPDFById(reportId: String!): String
+    getReportByAuditorAndStatus(auditorId: String!, status: String!): [Report]
+    getReportByTenantAndStatus(tenantId: String!, status: String!): [Report]
   }
 
   type Mutation {
