@@ -2,9 +2,9 @@ const { model, Schema, Types } = require('mongoose');
 
 const reportSchema = new Schema({
     type: String,
-    tenantId:  { type: String, default: '' },
+    tenantId:  { type: Schema.Types.ObjectId, ref: 'Tenant' },
     // TODO: Remove default, change to actual auditor Id
-    auditorId:  { type: String, default: '' },
+    auditorId:  { type: Schema.Types.ObjectId, ref: 'Auditor' },
     auditDate:  { type: String, default: Date.now },
     auditScore: { type: Number, default: 100 },
     status: { type: String, default: 'audited' },

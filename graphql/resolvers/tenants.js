@@ -65,6 +65,7 @@ module.exports = {
     async getTenantById(_, req) {
       try {
         const Tenants = await Tenant.findOne({ _id: req.id });
+        console.log(Tenants);
         return Tenants;
       } catch (err) {
         throw new Error(err);
@@ -72,7 +73,9 @@ module.exports = {
     },
     async getTenantByEmail(_, req) {
       try {
-        const Tenants = await Tenant.findOne({ email: req.email });
+        const emailUpperCase = req.email.toUpperCase(); // to remove case sensitivity
+
+        const Tenants = await Tenant.findOne({ email: emailUpperCase });
         return Tenants;
       } catch (err) {
         throw new Error(err);
@@ -85,7 +88,9 @@ module.exports = {
       if (!valid) {
         throw new UserInputError("Errors", { errors }); // throw error if input is empty
       }
-      const tenant = await Tenant.findOne({ email }); // mongoose call to find tenant by email
+      const emailUpperCase = email.toUpperCase(); // to remove case sensitivity
+
+      const tenant = await Tenant.findOne({ email: emailUpperCase }); // mongoose call to find tenant by email
       if (!tenant) {
         errors.general = "Tenant not found";
         throw new UserInputError("Tenant not found", { errors }); // throw error if user not found
@@ -178,7 +183,9 @@ module.exports = {
         throw new UserInputError("Errors", { errors });
       }
       // Makes sure name doesnt already exist in the database
-      const tenant1 = await Tenant.findOne({ name }); //'findone' to go to mongodb to check
+      const nameUpperCase = name.toUpperCase(); // to remove case sensitivity
+
+      const tenant1 = await Tenant.findOne({ name: nameUpperCase }); //'findone' to go to mongodb to check
       if (tenant1) {
         // if tenant1 found in database
         throw new UserInputError("name is already taken", {
@@ -188,7 +195,9 @@ module.exports = {
           },
         });
       }
-      const tenant2 = await Tenant.findOne({ email }); //'findone' to go to mongodb to check
+      const emailUpperCase = email.toUpperCase(); // to remove case sensitivity
+
+      const tenant2 = await Tenant.findOne({ email: emailUpperCase }); //'findone' to go to mongodb to check
       if (tenant2) {
         // if tenant found in database
         throw new UserInputError("email is already taken", {
@@ -199,8 +208,8 @@ module.exports = {
       }
 
       const newUser = new Tenant({
-        name,
-        email,
+        name: nameUpperCase,
+        email:emailUpperCase,
         institution,
         type,
         password: "",

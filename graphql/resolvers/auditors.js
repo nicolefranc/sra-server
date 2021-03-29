@@ -35,7 +35,7 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getAuditorsByInstitution(institution) {
+    async getAuditorsByInstitution(_,{institution}) {
       try {
         const Auditors = await Auditor.find({ institution: institution });
         return Auditors;
@@ -43,17 +43,19 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getAuditorByEmail(email) {
+    async getAuditorByEmail(_,{email}) {
       try {
-        const Auditors = await Auditor.findOne({ email: email });
+        const emailUpperCase = email.toUpperCase(); // to remove case sensitivity
+
+        const Auditors = await Auditor.findOne({ email: emailUpperCase });
         return Auditors;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async getAuditorById(id) {
+    async getAuditorById(_,{id}) {
       try {
-        const Auditors = await Auditor.findOne({ id: id });
+        const Auditors = await Auditor.findOne({_id: id });
         return Auditors;
       } catch (err) {
         throw new Error(err);
@@ -66,7 +68,11 @@ module.exports = {
       if (!valid) {
         throw new UserInputError("Errors", { errors }); // throw error if input is empty
       }
-      const auditor = await Auditor.findOne({ email }); // mongoose call to find auditor by email
+      const emailUpperCase = email.toUpperCase(); // to remove case sensitivity
+
+      console.log(emailUpperCase);
+
+      const auditor = await Auditor.findOne({ email: emailUpperCase }); // mongoose call to find auditor by email
       if (!auditor) {
         errors.general = "Auditor does not exist";
         throw new UserInputError("Auditor not found", { errors }); // throw error if user not found
@@ -152,8 +158,10 @@ module.exports = {
         // ensure that
         throw new UserInputError("Errors", { errors });
       }
+      const nameUpperCase = name.toUpperCase(); // to remove case sensitivity
+
       // Makes sure email doesnt already exist in the database
-      const auditor = await Auditor.findOne({ name }); //'findone' to go to mongodb to check
+      const auditor = await Auditor.findOne({ name: nameUpperCase }); //'findone' to go to mongodb to check
       if (auditor) {
         // if auditor found in database
         throw new UserInputError("name is already taken", {
@@ -162,7 +170,8 @@ module.exports = {
           },
         });
       }
-      const auditor2 = await Auditor.findOne({ email }); //'findone' to go to mongodb to check
+      const emailUpperCase = email.toUpperCase(); // to remove case sensitivity
+      const auditor2 = await Auditor.findOne({ email: emailUpperCase }); //'findone' to go to mongodb to check
       if (auditor2) {
         // if auditor found in database
         throw new UserInputError("email is already taken", {
@@ -173,10 +182,10 @@ module.exports = {
       }
 
       const newUser = new Auditor({
-        name,
+        name: nameUpperCase,
         role,
         institutions: [institution],
-        email,
+        email: emailUpperCase,
         password: "",
         createdAt: new Date().toISOString(),
         activated: false,
