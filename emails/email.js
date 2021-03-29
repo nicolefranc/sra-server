@@ -39,8 +39,10 @@ const nodemailer = require("nodemailer");
 
 // Gmail
 
-const sendEmail = () =>{
+const sendEmail = (addressee) =>{
     
+    console.log("sending email to ", addressee);
+
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -54,13 +56,13 @@ const sendEmail = () =>{
     
     let mailOptions = {
         from: process.env.C2G8EMAIL,
-        to: 'currentixer@gmail.com'   ,
+        to: addressee   ,
         subject: 'testing and testing',
         text: 'test',
         attachments: [{
             filename: 'result.pdf',
-            // path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
-            path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
+            path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
+            // path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
             contentType: 'aplication/pdf',
         }]
     };
@@ -70,6 +72,7 @@ const sendEmail = () =>{
             console.log("err.message,", err);
         } else{
             console.log("email sent!!");
+            return "email sent!!";
         }
     });
     return null;

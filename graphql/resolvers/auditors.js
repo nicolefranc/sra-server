@@ -35,7 +35,7 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getAuditorsByInstitution(institution) {
+    async getAuditorsByInstitution(_,{institution}) {
       try {
         const Auditors = await Auditor.find({ institution: institution });
         return Auditors;
@@ -43,7 +43,7 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getAuditorByEmail(email) {
+    async getAuditorByEmail(_,{email}) {
       try {
         const Auditors = await Auditor.findOne({ email: email });
         return Auditors;
@@ -51,9 +51,9 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getAuditorById(id) {
+    async getAuditorById(_,{id}) {
       try {
-        const Auditors = await Auditor.findOne({ id: id });
+        const Auditors = await Auditor.findOne({_id: id });
         return Auditors;
       } catch (err) {
         throw new Error(err);

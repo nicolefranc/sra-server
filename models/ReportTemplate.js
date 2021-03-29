@@ -17,10 +17,10 @@ const reportTemplateSchema = new Schema({
                     nonComplRemarks: { type: String, default: '' },
                     rectifications: { type: [String], default: [] },
                     rectRemarks: { type: String, default: '' }
-                }] // Images
-            }] // Line Items
-        }] // Subcategories
-    }] // Checklist
+                }]
+            }]
+        }]
+    }]
 });
 
 module.exports = model('ReportTemplate', reportTemplateSchema, 'reportTemplates');

@@ -181,6 +181,7 @@ module.exports = gql`
     getAllReportsByTenant(tenantId: String!): [Report]
     getAllReportsByAuditor(auditorId: String!): [Report]
     getReportById(reportId: String!): Report
+    getReportPDFById(reportId: String!): String
     getReportByAuditorAndStatus(auditorId: String!, status: String!): [Report]
     getReportByTenantAndStatus(tenantId: String!, status: String!): [Report]
   }
@@ -195,6 +196,7 @@ module.exports = gql`
 
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!
+    sendReportPDFById(reportId: String!, addressee: [String!]): String
 
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]
