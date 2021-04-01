@@ -252,6 +252,7 @@ module.exports = {
 
         async sendReportPDFById(_, { reportId, addressee, remarks }) {
             try {
+                console.log("report ID is ", reportId);
                 const report = await Report.findById(reportId);
                 if (report) {
                     const report = {somth: "smth", total: 98, item1: "not dusty", item1score: 1, item2: "not wet", item2score: 0};
