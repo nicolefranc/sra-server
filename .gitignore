@@ -117,3 +117,6 @@ dist
 
 #keys to access database
 .env
+
+#result.pdf
+result.pdf

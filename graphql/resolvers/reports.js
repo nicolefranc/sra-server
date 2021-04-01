@@ -7,6 +7,7 @@ const pdfTemplate = require("../../documents");
 const sendEmail = require("../../emails/email");
 
 var options = {
+    "format": "A4",
     "border": {
         "top": "30px",            // default is 0, units: mm, cm, in, px
         "bottom": "30px"
@@ -271,9 +272,9 @@ module.exports = {
                                 throw new Error(err);
                             }
                             console.log("pdf successfully created");
+                            sendEmail(addressee, remarks);
                         }
-                    );
-                    return await sendEmail(addressee, remarks);
+                    )
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
