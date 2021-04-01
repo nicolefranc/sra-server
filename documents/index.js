@@ -1,6 +1,53 @@
 module.exports = (checklistData) => {
-  console.log(checklistData.total);
-  const today = new Date();
+   console.log(checklistData);
+   const today = new Date();
+
+   // <tr class="item">
+   //          <td>First item: ${checklistData.checklistData.item1}</td>
+   //          <td>${checklistData.checklistData.item1score}</td>
+   //       </tr>
+   //       <tr class="item">
+   //          <td>First item: ${checklistData.checklistData.item1}</td>
+   //          <td>${checklistData.checklistData.item1score}</td>
+   //       </tr>
+
+   var checklist = ``;
+
+
+   //if compliant comp = sub / non sub 
+
+   checklistData.checklist.map((category) => {
+      checklist += `
+      <tr class="heading" style="page-break-before: auto;">
+         <td>First item: ${category.category}</td>
+         <td>${parseInt(category.score)}</td>
+      </tr>
+      `
+      category.subcategories.map(subcategory => {
+         checklist += `
+            <tr class="item">
+               <td>First item: ${subcategory.subcategory}</td>
+               <td>${parseInt(subcategory.subcatScore)}</td>
+            </tr>
+            
+         `
+         subcategory.lineItems.map(lineItem => {
+            checklist += `
+            <tr class=${lineItem.complied? "sub" : "nonsub"}>
+               <td>${lineItem.lineItem}</td>
+            </tr>
+            `
+               lineItem.images.map(image => {
+                  checklist += `
+                     <tr class={comp}>
+                        <td>${image.id}</td>
+                     </tr>
+                     `
+               })
+         })
+      })
+   })
+
   return `
   <!doctype html>
   <html>
@@ -8,11 +55,19 @@ module.exports = (checklistData) => {
         <meta charset="utf-8">
         <title>PDF Result Template</title>
         <style>
+ 
+         @page {
+            size: A4;
+            margin-top: 2in !important;
+            margin-bottom: 2in !important;
+            margin-left: 1.5in !important;
+            margin-right: 1.5in !important; 
+          }
            .invoice-box {
            max-width: 100%;
            margin: auto;
            padding: 30px;
-           border: 1px solid #eee;
+         //   border: 1px solid #eee;
            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
            font-size: 16px;
            line-height: 24px;
@@ -59,6 +114,14 @@ module.exports = (checklistData) => {
            .invoice-box table tr.item td {
            border-bottom: 1px solid #eee;
            }
+            .invoice-box table tr.sub td {
+            background-color: #F0F8FF ;
+            border: 1px solid #eee;
+            }
+            .invoice-box table tr.nonsub td {
+               background-color: #fff0f3 ;
+               border: 1px solid #eee;
+            }
            .invoice-box table tr.item.last td {
            border-bottom: none;
            }
@@ -76,18 +139,19 @@ module.exports = (checklistData) => {
            width: 100%;
            display: block;
            text-align: center;
-           }
-           }
+           }      
+           
         </style>
+
      </head>
      <body>
-        <div class="invoice-box">
+        <div class="invoice-box" style="margin-bottom:4rem;">
            <table cellpadding="0" cellspacing="0">
               <tr class="top">
                  <td colspan="2">
                     <table>
                        <tr>
-                          <td class="title" style="width:80%; padding-left:40%;"><img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
+                          <td class="title" style="width:80%; padding-left:40%; page"><img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
                              style="max-width:220px;"></td>
                        </tr>
                     </table>
@@ -105,35 +169,24 @@ module.exports = (checklistData) => {
                         </tr>
                        <tr>
                           <td>
-                             Tenant Id: ${checklistData.somth}
+                             Tenant Id: ${checklistData.tenantId}
                           </td>
                        </tr>
                        <tr>
                         <td>
-                           Auditor(s): ${checklistData.somth}
+                           Auditor(s): ${checklistData.type}
                         </td>
                        </tr>
                     </table>
                  </td>
               </tr>
-
-              <tr class="heading">
-                 <td>Hygiene and cleaniness:</td>
-                 <td>Score</td>
-              </tr>
-              <tr class="item">
-                 <td>First item: ${checklistData.item1}</td>
-                 <td>${checklistData.item1score}</td>
-              </tr>
-              <tr class="item">
-                 <td>Second item: ${checklistData.item2}</td>
-                 <td>${checklistData.item2score}</td>
-              </tr>
+               ${checklist}
+               
            </table>
 
            <br />
            <h1 class="justify-center">Total score: ${
-             parseInt(checklistData.total)
+             parseInt(checklistData.auditScore)
            }</h1>
         </div>
      </body>
