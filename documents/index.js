@@ -1,5 +1,5 @@
 module.exports = (checklistData) => {
-   console.log(checklistData.checklistData.total);
+   console.log(checklistData);
    const today = new Date();
 
    // <tr class="item">
@@ -13,69 +13,12 @@ module.exports = (checklistData) => {
 
    var checklist = ``;
 
-  const lineItems = [
-     {
-        name: 'name 1',
-        score: 'score 1',
-     },
-     {
-        name: 'name 2',
-        score: 'score 2',
-     }
-   ];
 
-//    for (catCount = 0; catCount < checklistData.length; catCount++) {
-//       checklist += `
-//        <tr class="heading">
-//           <td>First Heading: ${checklistData[catCount].category.categoryName}</td>
-//        </tr>`
+   //if compliant comp = sub / non sub 
 
-//       for (subcatCount = 0; subcatCount < checklistData[catCount].subcategories.length; subcatCount++) {
-         
-//          checklist += `
-//          <tr class="item">
-//             <td>First item: ${checklistData[catCount].subcategories[subcatCount].subcategoryName}</td>
-//          </tr>`
-
-//          for (itemCount = 0; itemCount < checklistData[catCount].subcategories[subcatCount].lineItems.length; itemCount++) {
-            
-//             checklist += `
-//             <tr class="item">
-//                <td>First item: ${checklistData[catCount].subcategories[subcatCount].lineItems[itemCount].lineItemName}</td>
-//             </tr>`
-
-//          }
-//       }
-//    }
-  
-//    checklistData.checklistData.map((category) => {
-//      checklist += `
-//       <tr class="heading">
-//          <td>First item: ${category.categoryName}</td>
-//          <td>${parseInt(category.total)}</td>
-//       </tr>
-//       `
-//       category.subcategories.map(subcategory => {
-//          checklist += `
-//             <tr class="item">
-//                <td>First item: ${subcategory.subcategoryName}</td>
-//             </tr>
-            
-//          `
-//          subcategory.lineItems.map(lineItem => {
-//             // some string
-//             checklist += `
-//             <tr class="sub">
-//                <td>${lineItem.lineItemName}</td>
-//             </tr>
-//             `
-//          })
-//       })
-//   })
-
-   data.data.checklist.map((category) => {
+   checklistData.checklist.map((category) => {
       checklist += `
-      <tr class="heading">
+      <tr class="heading" style="page-break-before: auto;">
          <td>First item: ${category.category}</td>
          <td>${parseInt(category.score)}</td>
       </tr>
@@ -90,13 +33,13 @@ module.exports = (checklistData) => {
          `
          subcategory.lineItems.map(lineItem => {
             checklist += `
-            <tr class="sub">
+            <tr class=${lineItem.complied? "sub" : "nonsub"}>
                <td>${lineItem.lineItem}</td>
             </tr>
             `
                lineItem.images.map(image => {
                   checklist += `
-                     <tr class="sub">
+                     <tr class={comp}>
                         <td>${image.id}</td>
                      </tr>
                      `
@@ -112,11 +55,19 @@ module.exports = (checklistData) => {
         <meta charset="utf-8">
         <title>PDF Result Template</title>
         <style>
+ 
+         @page {
+            size: A4;
+            margin-top: 2in !important;
+            margin-bottom: 2in !important;
+            margin-left: 1.5in !important;
+            margin-right: 1.5in !important; 
+          }
            .invoice-box {
            max-width: 100%;
            margin: auto;
            padding: 30px;
-           border: 1px solid #eee;
+         //   border: 1px solid #eee;
            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
            font-size: 16px;
            line-height: 24px;
@@ -163,11 +114,13 @@ module.exports = (checklistData) => {
            .invoice-box table tr.item td {
            border-bottom: 1px solid #eee;
            }
-           .invoice-box table tr.sub td {
+            .invoice-box table tr.sub td {
             background-color: #F0F8FF ;
-            padding-right: 10px
-            padding-left: 10px
             border: 1px solid #eee;
+            }
+            .invoice-box table tr.nonsub td {
+               background-color: #fff0f3 ;
+               border: 1px solid #eee;
             }
            .invoice-box table tr.item.last td {
            border-bottom: none;
@@ -186,18 +139,19 @@ module.exports = (checklistData) => {
            width: 100%;
            display: block;
            text-align: center;
-           }
-           }
+           }      
+           
         </style>
+
      </head>
      <body>
-        <div class="invoice-box">
+        <div class="invoice-box" style="margin-bottom:4rem;">
            <table cellpadding="0" cellspacing="0">
               <tr class="top">
                  <td colspan="2">
                     <table>
                        <tr>
-                          <td class="title" style="width:80%; padding-left:40%;"><img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
+                          <td class="title" style="width:80%; padding-left:40%; page"><img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
                              style="max-width:220px;"></td>
                        </tr>
                     </table>
@@ -215,12 +169,12 @@ module.exports = (checklistData) => {
                         </tr>
                        <tr>
                           <td>
-                             Tenant Id: ${data.data.tenantId}
+                             Tenant Id: ${checklistData.tenantId}
                           </td>
                        </tr>
                        <tr>
                         <td>
-                           Auditor(s): ${data.data.type}
+                           Auditor(s): ${checklistData.type}
                         </td>
                        </tr>
                     </table>
@@ -232,7 +186,7 @@ module.exports = (checklistData) => {
 
            <br />
            <h1 class="justify-center">Total score: ${
-             parseInt(data.data.auditScore)
+             parseInt(checklistData.auditScore)
            }</h1>
         </div>
      </body>

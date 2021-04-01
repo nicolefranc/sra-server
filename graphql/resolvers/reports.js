@@ -6,6 +6,13 @@ const pdf = require("html-pdf");
 const pdfTemplate = require("../../documents");
 const sendEmail = require("../../emails/email");
 
+var options = {
+    "border": {
+        "top": "30px",            // default is 0, units: mm, cm, in, px
+        "bottom": "30px"
+      },
+    }
+
 module.exports = {
     Query: {
         async getReportTemplate(_, { type }) {
@@ -251,11 +258,12 @@ module.exports = {
         },
 
         async sendReportPDFById(_, { reportId, addressee, remarks }) {
+            console.log(addressee);
             try {
                 const report = await Report.findById(reportId);
                 if (report) {
-                    const report = {somth: "smth", total: 98, item1: "not dusty", item1score: 1, item2: "not wet", item2score: 0};
-                    pdf.create(pdfTemplate(report), {}).toFile(
+                    // const report = {somth: "smth", total: 98, item1: "not dusty", item1score: 1, item2: "not wet", item2score: 0};
+                    pdf.create(pdfTemplate(report), options).toFile(
                         "result.pdf",
                         (err) => {
                             if (err) {
