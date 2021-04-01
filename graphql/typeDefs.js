@@ -81,7 +81,7 @@ module.exports = gql`
     id: ID
     category: String
     weightage: Int
-    score: Int
+    score: Float
     subcategories: [Subcategory]
   }
 
