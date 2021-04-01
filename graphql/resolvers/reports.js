@@ -247,7 +247,7 @@ module.exports = {
                 ],
             }; // end report constant
 
-            const newReport = new Report({ ...reportBody });
+            const newReport = new Report({ ...body });
             try {
                 const report = await newReport.save();
                 if (report) return report;

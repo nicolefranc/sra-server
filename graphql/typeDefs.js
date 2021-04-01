@@ -81,7 +81,7 @@ module.exports = gql`
     id: ID
     category: String
     weightage: Int
-    score: Int
+    score: Float
     subcategories: [Subcategory]
   }
 
@@ -116,12 +116,14 @@ module.exports = gql`
   }
 
   input ISubcategories {
+    id: String
     subcategory: String
     subcatScore: Float
     lineItems: [ILineItems]
   }
 
   input IChecklist {
+    id: String
     category: String!
     weightage: Int!
     score: Float!
@@ -136,18 +138,19 @@ module.exports = gql`
     rectRemarks: String
   }
 
-  # input ReportInput {
-  #   type: String!
-  #   tenantId: String!
-  #   auditDate: String
-  #   status: String!
-  #   checklist: [IChecklist]
-  #   images: [IImages]!
-  # }
-
   input ReportInput {
-    tenantId: String
+    type: String!
+    tenantId: String!
+    auditDate: String
+    auditScore: Float
+    status: String!
+    checklist: [IChecklist]
+    images: [IImages]!
   }
+
+  # input ReportInput {
+  #   tenantId: String
+  # }
 
   input TemplateInput {
     type: String!
