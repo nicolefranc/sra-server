@@ -10,4 +10,4 @@ const auditorSchema = new Schema({
   activated: Boolean
 });
 
-module.exports = model("Auditor", auditorSchema);
+module.exports = model("Auditor", auditorSchema, 'auditors');

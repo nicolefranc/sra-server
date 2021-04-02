@@ -45,18 +45,18 @@ module.exports = gql`
     type: [String!]
   }
 
+  input RegisterInput {
+    regToken: String!
+    password: String!
+    confirmPassword: String!
+  }
+
   type LineItemImage {
     lineItemId: String
     nonCompliances: [String]
     nonComplRemarks: String
     rectifications: [String]
     rectRemarks: String
-  }
-
-  input RegisterInput {
-    regToken: String!
-    password: String!
-    confirmPassword: String!
   }
 
   type LineItem {
@@ -99,12 +99,12 @@ module.exports = gql`
     auditorId: Auditor
     auditDate: String
     createdDate: String
-    auditScore: Int
+    auditScore: Float
     status: String
     remarks: String
     extension: Extension
     checklist: [Checklist]
-    images: [ID]
+    images: [LineItemImage]
   }
 
   type ReportTemplate {

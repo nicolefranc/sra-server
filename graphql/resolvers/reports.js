@@ -49,12 +49,9 @@ module.exports = {
         // Add getReportsByTenant and getReportById
         async getAllReportsByTenant(_, { tenantId }) {
             try {
-                const reports = await Report.find().populate({
-                        path: 'tenantId',
-                        match: doc => ({ _id: tenantId })
-                    }).populate({
-                        path: 'auditorId'
-                    })
+                const reports = await Report.find({ tenantId })
+                    .populate('auditorId').populate('tenantId');
+                console.log(reports.tenantId);
                 if (reports) {
                     return reports;   
                 } else {
@@ -67,12 +64,8 @@ module.exports = {
 
         async getAllReportsByAuditor(_, { auditorId }) {
             try {
-                const reports = await Report.find().populate({
-                        path: 'auditorId',
-                        match: doc => ({ _id: auditorId })
-                    }).populate({
-                        path: 'tenantId'
-                    })
+                const reports = await Report.find({ auditorId: auditorId })
+                    .populate('tenantId').populate('auditorId');
                 if (reports) {
                     return reports;
                 } else {
@@ -98,13 +91,8 @@ module.exports = {
         async getReportByAuditorAndStatus(_, { auditorId, status }) {
             try {
                 console.log(status);
-                const report = await Report.find()
-                    .where('status').equals(status)
-                    .populate({
-                        path: 'auditorId',
-                        match: doc => ({ _id: auditorId })
-                    })
-                    .populate('tenantId');
+                const report = await Report.find({ auditorId, status })
+                .populate('auditorId').populate('tenantId');
                 if (report) return report;
                 else throw new Error('Report not found.');
             } catch (err) {
@@ -115,13 +103,8 @@ module.exports = {
         async getReportByTenantAndStatus(_, { tenantId, status }) {
             try {
                 console.log(status);
-                const report = await Report.find()
-                    .where('status').equals(status)
-                    .populate({
-                        path: 'tenantId',
-                        match: doc => ({ _id: tenantId })
-                    })
-                    .populate('auditorId');
+                const report = await Report.find({ tenantId, status })
+                    .populate('tenantId').populate('auditorId');
                 if (report) return report;
                 else throw new Error("Report not found.");
             } catch (err) {
@@ -187,7 +170,7 @@ module.exports = {
             }
 
             const report = new Report({ auditorId: user.id, ...body });
-            
+            console.log(report.tenantId);
             try {
                 const savedReport = await report.save();
                 if (savedReport) return savedReport;

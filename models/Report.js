@@ -34,7 +34,7 @@ const reportSchema = new Schema({
         }] // Subcategories
     }], // Checklist
     images: [{
-        lineItemId: { type: Schema.Types.ObjectId, ref: 'LineItem'},
+        lineItemId: String,
         nonCompliances: [String],
         nonComplRemarks: String
     }]

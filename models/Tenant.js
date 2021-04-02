@@ -16,7 +16,7 @@ const tenantSchema = new Schema({ //creates a mongoose schema
     }],
 });
 
-module.exports = model('Tenant', tenantSchema);
+module.exports = model('Tenant', tenantSchema, 'tenants');
 // ^  creates a mongoose 'model' and subsequently exports it
 
 //  {loading, error, data} = useQuery(GET_DOGS);
