@@ -19,6 +19,7 @@ function generateToken(auditor) {
       id: auditor._id,
       name: auditor.name,
       type: auditor.role,
+      institutions: auditor.institutions
     },
     process.env.SECRET_KEY,
     { expiresIn: "1h" }
@@ -80,7 +81,7 @@ module.exports = {
       console.log(auditor.id);
       const match = await bcrypt.compare(password, auditor.password); // compare the value of the hashed password
       if (!match) {
-        errors.general = "Wrong crendetials";
+        errors.general = "Wrong credentials";
         throw new UserInputError("Wrong crendetials", { errors }); //passwords do not match
       }
       const token = generateToken(auditor); // generates token upon successful verification
@@ -198,6 +199,7 @@ module.exports = {
           id: newUser._id,
           name: newUser.name,
           type: newUser.role,
+          institutions: newUser.institutions
         },
         process.env.SECRET_KEY,
         { expiresIn: "24h" }

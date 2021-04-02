@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 const sendEmail = require("./emails/email");
+const checkAuth = require("./util/check-auth");
 
 // DB user athentication
 dotenv.config();
@@ -13,7 +14,7 @@ dotenv.config();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({req}) => ({req})
+  context: ({ req }) => ({ req })
 });
 
 mongoose

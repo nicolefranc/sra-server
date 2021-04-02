@@ -5,6 +5,9 @@ const pdf = require("html-pdf");
 
 const pdfTemplate = require("../../documents");
 const sendEmail = require("../../emails/email");
+const checkAuth = require("../../util/check-auth");
+const Tenant = require("../../models/Tenant");
+const { AuthenticationError } = require("apollo-server-errors");
 
 var options = {
     "format": "A4",
@@ -172,86 +175,22 @@ module.exports = {
             }
         },
 
-        async createReport(_, { body }) {
-            console.log(body);
-            let reportBody = {
-                type: "fnb",
-                tenantId: body.tenantId,
-                auditorId: "605c724420a3710f11856433",
-                auditDate: "26 March 2021",
-                checklist: [
-                    {
-                        category: "1. Professionalism & Staff Hygiene (10%)",
-                        weightage: 10,
-                        score: 10,
-                        subcategories: [
-                            {
-                                subcategory: "Professionalism",
-                                lineItems: [
-                                    {
-                                        lineItem:
-                                            "Shop is open and ready to service patients/visitors according to operating hours.",
-                                    },
-                                    {
-                                        lineItem:
-                                            "Staff Attendance: adequate staff for peak and non-peak hours.",
-                                    },
-                                    {
-                                        lineItem:
-                                            "At least one (1) clearly assigned person in-charge on site.",
-                                    },
-                                ],
-                            },
-                            {
-                                subcategory: "Staff Hygiene",
-                                lineItems: [
-                                    {
-                                        lineItem:
-                                            "Staff who are unfit for work due to illness should not report to work.",
-                                    },
-                                    {
-                                        lineItem:
-                                            "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        category: "2. Housekeeping & General Cleanliness (20%)",
-                        weightage: 20,
-                        score: 20,
-                        subcategories: [
-                            {
-                                subcategory: "General Environment Cleanliness",
-                                lineItems: [
-                                    {
-                                        lineItem:
-                                            "Cleaning and maintenance records for equipment, ventilation and exhaust system.",
-                                    },
-                                    {
-                                        lineItem:
-                                            "Adequate and regular pest control.\n-Pest control record.",
-                                    },
-                                    {
-                                        lineItem:
-                                            "Goods and equipment are within shop boundary.",
-                                    },
-                                    {
-                                        lineItem:
-                                            "Store display/ Shop front is neat and tidy.",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            }; // end report constant
-
-            const newReport = new Report({ ...body });
+        async createReport(_, { body }, context) {
+            const user = checkAuth(context);
+            
             try {
-                const report = await newReport.save();
-                if (report) return report;
+                const tenant = await Tenant.findById(body.tenantId);
+                const isAuthorized = user.institutions.includes(tenant.institution);
+                if (!isAuthorized) throw new AuthenticationError('You are not authorized to audit this tenant');
+            } catch (err) {
+                throw new Error(err);
+            }
+
+            const report = new Report({ auditorId: user.id, ...body });
+            
+            try {
+                const savedReport = await report.save();
+                if (savedReport) return savedReport;
                 else throw new Error("Creation of report unsuccessful.");
             } catch (err) {
                 throw new Error(err);
@@ -343,3 +282,78 @@ module.exports = {
         // }
     },
 };
+
+
+// let reportBody = {
+//     type: "fnb",
+//     tenantId: body.tenantId,
+//     auditorId: "605c724420a3710f11856433",
+//     auditDate: "26 March 2021",
+//     checklist: [
+//         {
+//             category: "1. Professionalism & Staff Hygiene (10%)",
+//             weightage: 10,
+//             score: 10,
+//             subcategories: [
+//                 {
+//                     subcategory: "Professionalism",
+//                     lineItems: [
+//                         {
+//                             lineItem:
+//                                 "Shop is open and ready to service patients/visitors according to operating hours.",
+//                         },
+//                         {
+//                             lineItem:
+//                                 "Staff Attendance: adequate staff for peak and non-peak hours.",
+//                         },
+//                         {
+//                             lineItem:
+//                                 "At least one (1) clearly assigned person in-charge on site.",
+//                         },
+//                     ],
+//                 },
+//                 {
+//                     subcategory: "Staff Hygiene",
+//                     lineItems: [
+//                         {
+//                             lineItem:
+//                                 "Staff who are unfit for work due to illness should not report to work.",
+//                         },
+//                         {
+//                             lineItem:
+//                                 "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
+//                         },
+//                     ],
+//                 },
+//             ],
+//         },
+//         {
+//             category: "2. Housekeeping & General Cleanliness (20%)",
+//             weightage: 20,
+//             score: 20,
+//             subcategories: [
+//                 {
+//                     subcategory: "General Environment Cleanliness",
+//                     lineItems: [
+//                         {
+//                             lineItem:
+//                                 "Cleaning and maintenance records for equipment, ventilation and exhaust system.",
+//                         },
+//                         {
+//                             lineItem:
+//                                 "Adequate and regular pest control.\n-Pest control record.",
+//                         },
+//                         {
+//                             lineItem:
+//                                 "Goods and equipment are within shop boundary.",
+//                         },
+//                         {
+//                             lineItem:
+//                                 "Store display/ Shop front is neat and tidy.",
+//                         },
+//                     ],
+//                 },
+//             ],
+//         },
+//     ],
+// }; // end report c

@@ -32,7 +32,12 @@ const reportSchema = new Schema({
                 images: [ { type: Schema.Types.ObjectId, ref: 'Image', default: '' } ] // Images
             }] // Line Items
         }] // Subcategories
-    }] // Checklist
+    }], // Checklist
+    images: [{
+        lineItemId: { type: Schema.Types.ObjectId, ref: 'LineItem'},
+        nonCompliances: [String],
+        nonComplRemarks: String
+    }]
 });
 
 module.exports = model('Report', reportSchema);

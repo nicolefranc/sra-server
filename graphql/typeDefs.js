@@ -72,10 +72,6 @@ module.exports = gql`
     lineItems: [LineItem]
   }
 
-  type ExtensionObject {
-    date: String
-    remarks: String
-  }
   
   type Checklist {
     id: ID
@@ -83,6 +79,11 @@ module.exports = gql`
     weightage: Int
     score: Float
     subcategories: [Subcategory]
+  }
+
+  type ExtensionObject {
+    date: String
+    remarks: String
   }
 
   type Extension {
@@ -97,8 +98,10 @@ module.exports = gql`
     tenantId: Tenant
     auditorId: Auditor
     auditDate: String
+    createdDate: String
     auditScore: Int
     status: String
+    remarks: String
     extension: Extension
     checklist: [Checklist]
     images: [ID]
@@ -137,13 +140,27 @@ module.exports = gql`
     rectifications: [String]
     rectRemarks: String
   }
+  
+  input IExtensionObject {
+    date: String
+    remarks: String
+  }
+
+  input IExtension {
+    proposed: IExtensionObject
+    final: IExtensionObject
+    status: String
+  }
 
   input ReportInput {
     type: String!
     tenantId: String!
     auditDate: String
+    createdDate: String
     auditScore: Float
     status: String!
+    extension: IExtension
+    remarks: String
     checklist: [IChecklist]
     images: [IImages]!
   }
