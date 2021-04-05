@@ -215,6 +215,7 @@ module.exports = gql`
     createReport(body: ReportInput!): Report!
     proposeExtension(reportId: String!, date: String!, remarks: String!): Report!
     sendReportPDFById(reportId: String!, addressee: [String!], remarks: String!): String
+    sendEmail(from: String!, to: String!, title: String!, body: String!): String
 
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]

@@ -2,10 +2,10 @@ const Report = require("../../models/Report");
 const ReportTemplate = require("../../models/ReportTemplate");
 
 const pdf = require("html-pdf");
-const fs = require('fs');
+const fs = require("fs");
 
 const pdfTemplate = require("../../documents");
-const sendEmail = require("../../emails/email");
+const {sendEmail,sendPDFEmail} = require("../../emails/email");
 const checkAuth = require("../../util/check-auth");
 const Tenant = require("../../models/Tenant");
 const { AuthenticationError } = require("apollo-server-errors");
@@ -134,8 +134,10 @@ module.exports = {
                     //         console.log("pdf successfully created");
                     //     }
                     // );
-                    const stream = fs.createReadStream(`${__dirname}/../../result.pdf`);
-                    return 
+                    const stream = fs.createReadStream(
+                        `${__dirname}/../../result.pdf`
+                    );
+                    return;
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
@@ -194,11 +196,9 @@ module.exports = {
         async proposeExtension(_, { reportId, date, remarks }, context) {
             const user = checkAuth(context);
 
-            const report = await Report.findOne(
-                { _id: reportId }
-            )
+            const report = await Report.findOne({ _id: reportId });
 
-            if(!report){
+            if (!report) {
                 throw new Error("can't find report");
             }
 
@@ -213,7 +213,6 @@ module.exports = {
             } catch (err) {
                 throw new Error(err);
             }
-            
         },
 
         async sendReportPDFById(_, { reportId, addressee, remarks }) {
@@ -230,13 +229,23 @@ module.exports = {
                                 throw new Error(err);
                             }
                             console.log("pdf successfully created");
-                            sendEmail(addressee, remarks);
+                            sendPDFEmail(addressee, remarks);
                         }
                     );
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
+        },
+
+        async sendEmail(_, { from, to, title, body }) {
+            console.log("sending from",from,"to",to,"\n",title,"\n",body);
+            try {
+                sendEmail(from,to,title, body);
+            } catch (err) {
+                throw new Error(err);
+            }
+            return "success"
         },
 
         // async createReport(_, { body }) {
