@@ -2,6 +2,7 @@ const Report = require("../../models/Report");
 const ReportTemplate = require("../../models/ReportTemplate");
 
 const pdf = require("html-pdf");
+const fs = require('fs');
 
 const pdfTemplate = require("../../documents");
 const sendEmail = require("../../emails/email");
@@ -10,12 +11,12 @@ const Tenant = require("../../models/Tenant");
 const { AuthenticationError } = require("apollo-server-errors");
 
 var options = {
-    "format": "A4",
-    "border": {
-        "top": "30px",            // default is 0, units: mm, cm, in, px
-        "bottom": "30px"
-      },
-    }
+    format: "A4",
+    border: {
+        top: "30px", // default is 0, units: mm, cm, in, px
+        bottom: "30px",
+    },
+};
 
 module.exports = {
     Query: {
@@ -50,13 +51,14 @@ module.exports = {
         async getAllReportsByTenant(_, { tenantId }) {
             try {
                 const reports = await Report.find({ tenantId })
-                    .populate('auditorId').populate('tenantId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("auditorId")
+                    .populate("tenantId")
+                    .sort({ auditDate: "desc" });
                 console.log(reports.tenantId);
                 if (reports) {
-                    return reports;   
+                    return reports;
                 } else {
-                    throw new Error('Reports not found.')
+                    throw new Error("Reports not found.");
                 }
             } catch (err) {
                 throw new Error(err);
@@ -66,8 +68,9 @@ module.exports = {
         async getAllReportsByAuditor(_, { auditorId }) {
             try {
                 const reports = await Report.find({ auditorId: auditorId })
-                    .populate('tenantId').populate('auditorId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("tenantId")
+                    .populate("auditorId")
+                    .sort({ auditDate: "desc" });
                 if (reports) {
                     return reports;
                 } else {
@@ -81,10 +84,10 @@ module.exports = {
         async getReportById(_, { reportId }) {
             try {
                 const report = await Report.findById(reportId)
-                    .populate('tenantId')
-                    .populate('auditorId');
+                    .populate("tenantId")
+                    .populate("auditorId");
                 if (report) return report;
-                else throw new Error('Report not found.');
+                else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
@@ -94,10 +97,11 @@ module.exports = {
             try {
                 console.log(status);
                 const report = await Report.find({ auditorId, status })
-                    .populate('auditorId').populate('tenantId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("auditorId")
+                    .populate("tenantId")
+                    .sort({ auditDate: "desc" });
                 if (report) return report;
-                else throw new Error('Report not found.');
+                else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
@@ -107,8 +111,9 @@ module.exports = {
             try {
                 console.log(status);
                 const report = await Report.find({ tenantId, status })
-                    .populate('tenantId').populate('auditorId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("tenantId")
+                    .populate("auditorId")
+                    .sort({ auditDate: "desc" });
                 if (report) return report;
                 else throw new Error("Report not found.");
             } catch (err) {
@@ -129,16 +134,13 @@ module.exports = {
                     //         console.log("pdf successfully created");
                     //     }
                     // );
-                    return `${__dirname}../../result.pdf`;
+                    const stream = fs.createReadStream(`${__dirname}/../../result.pdf`);
+                    return 
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
         },
-
-
-
-
     },
 
     Mutation: {
@@ -164,11 +166,16 @@ module.exports = {
 
         async createReport(_, { body }, context) {
             const user = checkAuth(context);
-            
+
             try {
                 const tenant = await Tenant.findById(body.tenantId);
-                const isAuthorized = user.institutions.includes(tenant.institution);
-                if (!isAuthorized) throw new AuthenticationError('You are not authorized to audit this tenant');
+                const isAuthorized = user.institutions.includes(
+                    tenant.institution
+                );
+                if (!isAuthorized)
+                    throw new AuthenticationError(
+                        "You are not authorized to audit this tenant"
+                    );
             } catch (err) {
                 throw new Error(err);
             }
@@ -182,6 +189,31 @@ module.exports = {
             } catch (err) {
                 throw new Error(err);
             }
+        },
+
+        async proposeExtension(_, { reportId, date, remarks }, context) {
+            const user = checkAuth(context);
+
+            const report = await Report.findOne(
+                { _id: reportId }
+            )
+
+            if(!report){
+                throw new Error("can't find report");
+            }
+
+            report.extension.proposed.date = date;
+            report.extension.proposed.remarks = remarks;
+            report.extension.status = "Pending Approval";
+
+            try {
+                const savedReport = await report.save();
+                if (savedReport) return savedReport;
+                else throw new Error("Creation of report unsuccessful.");
+            } catch (err) {
+                throw new Error(err);
+            }
+            
         },
 
         async sendReportPDFById(_, { reportId, addressee, remarks }) {
@@ -200,7 +232,7 @@ module.exports = {
                             console.log("pdf successfully created");
                             sendEmail(addressee, remarks);
                         }
-                    )
+                    );
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
@@ -269,7 +301,6 @@ module.exports = {
         // }
     },
 };
-
 
 // let reportBody = {
 //     type: "fnb",
