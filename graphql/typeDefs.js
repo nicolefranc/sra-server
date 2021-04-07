@@ -24,6 +24,7 @@ module.exports = gql`
     activated: String!
     token: String
     performance: [Performance]
+    expiry: String
   }
 
   type Performance {
@@ -210,6 +211,7 @@ module.exports = gql`
     createTenant(createTenantInput: CreateTenantInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
+    changeTenantExpiry(tenantId:String!, date:String!): Tenant!
 
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!
