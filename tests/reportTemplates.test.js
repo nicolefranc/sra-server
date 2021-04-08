@@ -75,9 +75,7 @@ describe('Tests the Report Templates', () => {
         const { data } = await client.mutate({ mutation: createTemplate });
         
         const reportTemplate = await ReportTemplate.findOne({ type: 'fnb' });
-        // console.log(reportTemplate);
         expect(reportTemplate).toBeTruthy();
-        // done();
     })
 
     it('should not be null', async () => {
