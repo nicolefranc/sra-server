@@ -5,7 +5,7 @@ const pdf = require("html-pdf");
 const fs = require("fs");
 
 const pdfTemplate = require("../../documents");
-const {sendEmail,sendPDFEmail} = require("../../emails/email");
+const { sendEmail, sendPDFEmail } = require("../../emails/email");
 const checkAuth = require("../../util/check-auth");
 const Tenant = require("../../models/Tenant");
 const { AuthenticationError } = require("apollo-server-errors");
@@ -179,11 +179,29 @@ module.exports = {
                         "You are not authorized to audit this tenant"
                     );
             } catch (err) {
+                console.log(err);
                 throw new Error(err);
             }
 
             const report = new Report({ auditorId: user.id, ...body });
-            console.log(report.tenantId);
+
+            //to update tenant performance: 1. get the number of entries, 2. recompute average 3. store back
+            const tenant2 = await Tenant.findById(body.tenantId);
+            if (!tenant2) {
+                console.log("can't find tenant");
+            }
+            tenant2.performance = computeNewPerfomance(tenant2, report);
+
+            
+            try {
+                const savedTenant = await tenant2.save();
+                if (!savedTenant){
+                    console.log("can't update tenant performance");
+                }
+            } catch (err){
+                throw new Error(err);
+            }
+
             try {
                 const savedReport = await report.save();
                 if (savedReport) return savedReport;
@@ -239,13 +257,22 @@ module.exports = {
         },
 
         async sendEmail(_, { from, to, title, body }) {
-            console.log("sending from",from,"to",to,"\n",title,"\n",body);
+            console.log(
+                "sending from",
+                from,
+                "to",
+                to,
+                "\n",
+                title,
+                "\n",
+                body
+            );
             try {
-                sendEmail(from,to,title, body);
+                sendEmail(from, to, title, body);
             } catch (err) {
                 throw new Error(err);
             }
-            return "success"
+            return "success";
         },
 
         // async createReport(_, { body }) {
@@ -384,3 +411,32 @@ module.exports = {
 //         },
 //     ],
 // }; // end report c
+
+const computeNewPerfomance = function (tenant, report) {
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December",];
+    const currentMonth = months[new Date().getMonth()];
+    const currentMonthPerformance = tenant.performance.filter((item) => item.month === currentMonth);
+    const performanceArray = [...tenant.performance]; //deep clone
+    // 2. recompute average
+    const newMonthPerformance = currentMonthPerformance[0]
+    ? {
+            month: currentMonth,
+            entry: currentMonthPerformance[0].entry + 1,
+            score:
+                (currentMonthPerformance[0].entry * currentMonthPerformance[0].score + report.auditScore) /(currentMonthPerformance[0].entry + 1),
+        } : { month: currentMonth, entry: 1, score: report.auditScore };
+    // 3. store back in tenant
+    var found = false;
+    for(var i = 0; i < performanceArray.length; i++) {
+        if (performanceArray[i].month == currentMonth) {
+            found = true;
+            performanceArray[i] = newMonthPerformance;
+            break;
+        }
+    }
+    if (!found) {
+        performanceArray.push(newMonthPerformance);
+        console.log("not found");
+    }
+    return performanceArray;
+};

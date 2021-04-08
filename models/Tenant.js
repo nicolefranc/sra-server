@@ -12,7 +12,7 @@ const tenantSchema = new Schema({ //creates a mongoose schema
     performance: [{
         month: String,
         entry: Number,
-        score: [],
+        score: Number,
     }],
     expiry: String,
 });
