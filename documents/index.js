@@ -1,5 +1,5 @@
 module.exports = (checklistData) => {
-   console.log(checklistData);
+   // console.log(checklistData);
    const today = new Date();
 
    // <tr class="item">

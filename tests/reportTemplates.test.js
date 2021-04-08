@@ -75,7 +75,8 @@ describe('Tests the Report Templates', () => {
         const { data } = await client.mutate({ mutation: createTemplate });
         
         const reportTemplate = await ReportTemplate.findOne({ type: 'fnb' });
-        expect(reportTemplate).toBeTruthy();
+        await expect(reportTemplate).toBeTruthy();
+        // done();
     })
 
     it('should not be null', async () => {
@@ -89,8 +90,9 @@ describe('Tests the Report Templates', () => {
             query: fetchTemplate
         })
         
-        expect(data.getAllReportTemplates.length).toBe(1);
+        await expect(data.getAllReportTemplates.length).toBe(1);
     });
+    // done();
 })
 
 afterAll(async () => {

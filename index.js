@@ -17,6 +17,8 @@ const server = new ApolloServer({
   context: ({ req }) => ({ req })
 });
 
+module.exports = server;
+
 mongoose
   .connect(process.env.MONGO_DB_URL, {
     useNewUrlParser: true,
@@ -30,7 +32,6 @@ mongoose
     console.log(`Server running at ${res.url}`);
   });
 
-module.exports = server;
 
 
 //for pdf stuff

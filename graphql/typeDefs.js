@@ -162,7 +162,7 @@ module.exports = gql`
     extension: IExtension
     remarks: String
     checklist: [IChecklist]
-    images: [IImages]!
+    images: [IImages]
   }
 
   # input ReportInput {

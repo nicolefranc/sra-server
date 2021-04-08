@@ -12,10 +12,10 @@ const { AuthenticationError } = require("apollo-server-errors");
 var options = {
     "format": "A4",
     "border": {
-        "top": "30px",            // default is 0, units: mm, cm, in, px
+        "top": "30px", // default is 0, units: mm, cm, in, px
         "bottom": "30px"
-      },
-    }
+    },
+}
 
 module.exports = {
     Query: {
@@ -143,7 +143,7 @@ module.exports = {
 
     Mutation: {
         async createReportTemplate(_, { body }) {
-            console.log(body);
+            // console.log(body);
 
             const newTemplate = new ReportTemplate({
                 ...body,
