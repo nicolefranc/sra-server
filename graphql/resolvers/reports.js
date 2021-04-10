@@ -2,20 +2,21 @@ const Report = require("../../models/Report");
 const ReportTemplate = require("../../models/ReportTemplate");
 
 const pdf = require("html-pdf");
+const fs = require("fs");
 
 const pdfTemplate = require("../../documents");
-const sendEmail = require("../../emails/email");
+const { sendEmail, sendPDFEmail } = require("../../emails/email");
 const checkAuth = require("../../util/check-auth");
 const Tenant = require("../../models/Tenant");
 const { AuthenticationError } = require("apollo-server-errors");
 
 var options = {
-    "format": "A4",
-    "border": {
-        "top": "30px",            // default is 0, units: mm, cm, in, px
-        "bottom": "30px"
-      },
-    }
+    format: "A4",
+    border: {
+        top: "30px", // default is 0, units: mm, cm, in, px
+        bottom: "30px",
+    },
+};
 
 module.exports = {
     Query: {
@@ -50,13 +51,14 @@ module.exports = {
         async getAllReportsByTenant(_, { tenantId }) {
             try {
                 const reports = await Report.find({ tenantId })
-                    .populate('auditorId').populate('tenantId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("auditorId")
+                    .populate("tenantId")
+                    .sort({ auditDate: "desc" });
                 console.log(reports.tenantId);
                 if (reports) {
-                    return reports;   
+                    return reports;
                 } else {
-                    throw new Error('Reports not found.')
+                    throw new Error("Reports not found.");
                 }
             } catch (err) {
                 throw new Error(err);
@@ -66,8 +68,9 @@ module.exports = {
         async getAllReportsByAuditor(_, { auditorId }) {
             try {
                 const reports = await Report.find({ auditorId: auditorId })
-                    .populate('tenantId').populate('auditorId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("tenantId")
+                    .populate("auditorId")
+                    .sort({ auditDate: "desc" });
                 if (reports) {
                     return reports;
                 } else {
@@ -81,10 +84,10 @@ module.exports = {
         async getReportById(_, { reportId }) {
             try {
                 const report = await Report.findById(reportId)
-                    .populate('tenantId')
-                    .populate('auditorId');
+                    .populate("tenantId")
+                    .populate("auditorId");
                 if (report) return report;
-                else throw new Error('Report not found.');
+                else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
@@ -94,10 +97,11 @@ module.exports = {
             try {
                 console.log(status);
                 const report = await Report.find({ auditorId, status })
-                    .populate('auditorId').populate('tenantId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("auditorId")
+                    .populate("tenantId")
+                    .sort({ auditDate: "desc" });
                 if (report) return report;
-                else throw new Error('Report not found.');
+                else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
@@ -107,8 +111,9 @@ module.exports = {
             try {
                 console.log(status);
                 const report = await Report.find({ tenantId, status })
-                    .populate('tenantId').populate('auditorId')
-                    .sort({ auditDate: 'desc' });
+                    .populate("tenantId")
+                    .populate("auditorId")
+                    .sort({ auditDate: "desc" });
                 if (report) return report;
                 else throw new Error("Report not found.");
             } catch (err) {
@@ -129,16 +134,15 @@ module.exports = {
                     //         console.log("pdf successfully created");
                     //     }
                     // );
-                    return `${__dirname}../../result.pdf`;
+                    const stream = fs.createReadStream(
+                        `${__dirname}/../../result.pdf`
+                    );
+                    return;
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
         },
-
-
-
-
     },
 
     Mutation: {
@@ -164,17 +168,62 @@ module.exports = {
 
         async createReport(_, { body }, context) {
             const user = checkAuth(context);
-            
+
             try {
                 const tenant = await Tenant.findById(body.tenantId);
-                const isAuthorized = user.institutions.includes(tenant.institution);
-                if (!isAuthorized) throw new AuthenticationError('You are not authorized to audit this tenant');
+                const isAuthorized = user.institutions.includes(
+                    tenant.institution
+                );
+                if (!isAuthorized)
+                    throw new AuthenticationError(
+                        "You are not authorized to audit this tenant"
+                    );
             } catch (err) {
+                console.log(err);
                 throw new Error(err);
             }
 
             const report = new Report({ auditorId: user.id, ...body });
-            console.log(report.tenantId);
+
+            //to update tenant performance: 1. get the number of entries, 2. recompute average 3. store back
+            const tenant2 = await Tenant.findById(body.tenantId);
+            if (!tenant2) {
+                console.log("can't find tenant");
+            }
+            tenant2.performance = computeNewPerfomance(tenant2, report);
+
+            
+            try {
+                const savedTenant = await tenant2.save();
+                if (!savedTenant){
+                    console.log("can't update tenant performance");
+                }
+            } catch (err){
+                throw new Error(err);
+            }
+
+            try {
+                const savedReport = await report.save();
+                if (savedReport) return savedReport;
+                else throw new Error("Creation of report unsuccessful.");
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async proposeExtension(_, { reportId, date, remarks }, context) {
+            const user = checkAuth(context);
+
+            const report = await Report.findOne({ _id: reportId });
+
+            if (!report) {
+                throw new Error("can't find report");
+            }
+
+            report.extension.proposed.date = date;
+            report.extension.proposed.remarks = remarks;
+            report.extension.status = "Pending Approval";
+
             try {
                 const savedReport = await report.save();
                 if (savedReport) return savedReport;
@@ -198,13 +247,32 @@ module.exports = {
                                 throw new Error(err);
                             }
                             console.log("pdf successfully created");
-                            sendEmail(addressee, remarks);
+                            sendPDFEmail(addressee, remarks);
                         }
-                    )
+                    );
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);
             }
+        },
+
+        async sendEmail(_, { from, to, title, body }) {
+            console.log(
+                "sending from",
+                from,
+                "to",
+                to,
+                "\n",
+                title,
+                "\n",
+                body
+            );
+            try {
+                sendEmail(from, to, title, body);
+            } catch (err) {
+                throw new Error(err);
+            }
+            return "success";
         },
 
         // async createReport(_, { body }) {
@@ -269,7 +337,6 @@ module.exports = {
         // }
     },
 };
-
 
 // let reportBody = {
 //     type: "fnb",
@@ -344,3 +411,32 @@ module.exports = {
 //         },
 //     ],
 // }; // end report c
+
+const computeNewPerfomance = function (tenant, report) {
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December",];
+    const currentMonth = months[new Date().getMonth()];
+    const currentMonthPerformance = tenant.performance.filter((item) => item.month === currentMonth);
+    const performanceArray = [...tenant.performance]; //deep clone
+    // 2. recompute average
+    const newMonthPerformance = currentMonthPerformance[0]
+    ? {
+            month: currentMonth,
+            entry: currentMonthPerformance[0].entry + 1,
+            score:
+                (currentMonthPerformance[0].entry * currentMonthPerformance[0].score + report.auditScore) /(currentMonthPerformance[0].entry + 1),
+        } : { month: currentMonth, entry: 1, score: report.auditScore };
+    // 3. store back in tenant
+    var found = false;
+    for(var i = 0; i < performanceArray.length; i++) {
+        if (performanceArray[i].month == currentMonth) {
+            found = true;
+            performanceArray[i] = newMonthPerformance;
+            break;
+        }
+    }
+    if (!found) {
+        performanceArray.push(newMonthPerformance);
+        console.log("not found");
+    }
+    return performanceArray;
+};

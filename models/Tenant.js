@@ -11,10 +11,13 @@ const tenantSchema = new Schema({ //creates a mongoose schema
     activated: Boolean,
     performance: [{
         month: String,
-        key: String,
-        score: String,
+        entry: Number,
+        score: Number,
     }],
+    expiry: String,
 });
+
+
 
 module.exports = model('Tenant', tenantSchema, 'tenants');
 // ^  creates a mongoose 'model' and subsequently exports it

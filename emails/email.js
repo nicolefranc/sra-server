@@ -38,7 +38,7 @@ const nodemailer = require("nodemailer");
 
 // Gmail
 
-const sendEmail = (addressee, remarks) =>{
+const sendPDFEmail = (addressee, remarks) =>{
     
     console.log("sending email to ", addressee, "with remarks", remarks);
 
@@ -79,5 +79,37 @@ const sendEmail = (addressee, remarks) =>{
     return null;
 }
 
+const sendEmail = (from, to, title, body) =>{
+    
+    console.log("Message from ".concat(from).concat(": ").concat(title));
 
-module.exports = sendEmail;
+    let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.C2G8EMAIL,
+            pass: process.env.C2G8PASSWORD,
+        },
+        tls: {
+            rejectUnauthorized: false,
+        }
+    });
+    
+    let mailOptions = {
+        from: process.env.C2G8EMAIL,
+        to: to   ,
+        subject: "Message from ".concat(from).concat(": ").concat(title),
+        text: body,
+    };
+    
+    transporter.sendMail(mailOptions, function(err,data){
+        if (err){
+            console.log("err.message,", err);
+        } else{
+            console.log("email sent!!");
+            return "email sent!!";
+        }
+    });
+    return null;
+}
+
+module.exports = {sendEmail,sendPDFEmail};
