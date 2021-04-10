@@ -1,5 +1,6 @@
 //Email stuff
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 
 // // Node Mailer
 // // Step 1 add key for ht mail gun account
@@ -38,15 +39,27 @@ const nodemailer = require("nodemailer");
 
 // Gmail
 
-const sendPDFEmail = (addressee, remarks) =>{
+
+const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
+oAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
+
+
+
+const sendPDFEmail = async (addressee, remarks) =>{
+
+    const accessToken = await oAuth2Client.getAccessToken();
     
     console.log("sending email to ", addressee, "with remarks", remarks);
 
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
+            type: 'OAuth2',
             user: process.env.C2G8EMAIL,
-            pass: process.env.C2G8PASSWORD,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: accessToken,
         },
         tls: {
             rejectUnauthorized: false,
@@ -79,15 +92,21 @@ const sendPDFEmail = (addressee, remarks) =>{
     return null;
 }
 
-const sendEmail = (from, to, title, body) =>{
+const sendEmail = async (from, to, title, body) =>{
+
+    const accessToken = await oAuth2Client.getAccessToken();
     
     console.log("Message from ".concat(from).concat(": ").concat(title));
 
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
+            type: 'OAuth2',
             user: process.env.C2G8EMAIL,
-            pass: process.env.C2G8PASSWORD,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: accessToken,
         },
         tls: {
             rejectUnauthorized: false,

@@ -30,7 +30,7 @@ module.exports = gql`
   type Performance {
     month: String!
     entry: String!
-    score: Int!
+    score: Float!
   }
   input CreateAuditorInput {
     name: String!
