@@ -72,6 +72,15 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getTenantByName(_, req) {
+      try {
+        const Tenants = await Tenant.findOne({ name: req.name });
+        console.log(Tenants);
+        return Tenants;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
     async getTenantByEmail(_, req) {
       try {
         const emailUpperCase = req.email.toUpperCase(); // to remove case sensitivity

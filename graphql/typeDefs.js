@@ -29,7 +29,7 @@ module.exports = gql`
 
   type Performance {
     month: String!
-    key: String!
+    entry: String!
     score: Int!
   }
   input CreateAuditorInput {
@@ -192,6 +192,7 @@ module.exports = gql`
     getTenantsByAuditor(auditorId: String!): [Tenant]
     getTenantByEmail(email: String!): Tenant
     getTenantById(id: String!): Tenant
+    getTenantByName(name: String!): Tenant
 
     getReportTemplate(type: String!): ReportTemplate!
     getAllReportTemplates: [ReportTemplate]!
