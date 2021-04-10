@@ -62,7 +62,7 @@ const sendEmail = (addressee, remarks) =>{
             filename: 'result.pdf',
             // path: 'C:/Users/Windows/ESCProject/sra-server/result.pdf',
             // path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
-            path: `${__dirname}/../result.pdf`,
+            path: `~/../result.pdf`,
             // path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
             contentType: 'aplication/pdf',
         }]
