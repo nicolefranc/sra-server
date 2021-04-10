@@ -69,7 +69,7 @@ const sendPDFEmail = async (addressee, remarks) =>{
     let mailOptions = {
         from: process.env.C2G8EMAIL,
         to: addressee   ,
-        subject: 'testing and testing',
+        subject: 'Audit:'.concat(new Date().format("DD MMM YYYY")),
         text: 'Hi, please find the audit attached for viewing. \n\nRemarks: '.concat(remarks),
         attachments: [{
             filename: 'result.pdf',
