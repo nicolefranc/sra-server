@@ -40,13 +40,18 @@ const { google } = require("googleapis");
 // Gmail
 
 
-const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
-oAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
+
 
 
 
 const sendPDFEmail = async (addressee, remarks) =>{
 
+    console.log("CLIENT_ID",process.env.CLIENT_ID);
+    console.log("CLIENT_SECRET",process.env.CLIENT_SECRET);
+    console.log("REDIRECT_URL",process.env.REDIRECT_URL);
+    console.log("REFRESH_TOKEN",process.env.REFRESH_TOKEN);
+    const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
+    oAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
     const accessToken = await oAuth2Client.getAccessToken();
     
     console.log("sending email to ", addressee, "with remarks", remarks);
