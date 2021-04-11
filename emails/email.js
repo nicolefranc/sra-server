@@ -66,16 +66,24 @@ const sendPDFEmail = async (addressee, remarks) =>{
         }
     });
     
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = mm + '/' + dd + '/' + yyyy;
+
     let mailOptions = {
         from: process.env.C2G8EMAIL,
         to: addressee   ,
-        subject: 'testing and testing',
+        subject: 'Audit :'.concat(today),
         text: 'Hi, please find the audit attached for viewing. \n\nRemarks: '.concat(remarks),
         attachments: [{
             filename: 'result.pdf',
             // path: 'C:/Users/Windows/ESCProject/sra-server/result.pdf',
             // path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
-            path: `~/result.pdf`,
+            // path: `~/result.pdf`,
+            path: `./result.pdf`,
             // path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
             contentType: 'aplication/pdf',
         }]
