@@ -54,6 +54,7 @@ module.exports = gql`
 
   type LineItemImage {
     lineItemId: String
+    lineItem: String
     nonCompliances: [String]
     nonComplRemarks: String
     rectifications: [String]
@@ -136,6 +137,7 @@ module.exports = gql`
 
   input IImages {
     lineItemId: String
+    lineItem: String
     nonCompliances: [String]
     nonComplRemarks: String
     rectifications: [String]
@@ -217,6 +219,7 @@ module.exports = gql`
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!
     proposeExtension(reportId: String!, date: String!, remarks: String!): Report!
+    approveExtension(reportId: String!, finalDate: String!, finalRemarks: String!): Report!
     sendReportPDFById(reportId: String!, addressee: [String!], remarks: String!): String
     sendEmail(from: String!, to: String!, title: String!, body: String!): String
 
