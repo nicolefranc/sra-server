@@ -35,8 +35,11 @@ const reportSchema = new Schema({
     }], // Checklist
     images: [{
         lineItemId: String,
+        lineItem: String,
         nonCompliances: [String],
-        nonComplRemarks: String
+        nonComplRemarks: String,
+        rectifications: [String],
+        rectRemarks: String
     }]
 });
 
