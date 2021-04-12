@@ -11,7 +11,6 @@ const { google } = require("googleapis");
 //   },
 // };
 
-
 // // Step 2: Transporter - allow you connect to whatever place you want to connect
 // // we want to connect to node gun
 // // nodemailMailgun is a function that will take in the configuration password for the mailgun
@@ -20,7 +19,7 @@ const { google } = require("googleapis");
 // // Step 3: what we want the user to receive?
 // const mailOptions = {
 //     from: "excisted user: <me@sample.mailgun.org>",
-//     to: 'kaifeng_toh@mymail.sutd.edu.sg', 
+//     to: 'kaifeng_toh@mymail.sutd.edu.sg',
 //     subject: 'Welcome to my app',
 //     text: 'IT is working'
 // }
@@ -39,22 +38,22 @@ const { google } = require("googleapis");
 
 // Gmail
 
+const oAuth2Client = new google.auth.OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+);
+oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
 
-const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
-oAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
-
-
-
-const sendPDFEmail = async (addressee, remarks) =>{
-
+const sendPDFEmail = async (addressee, remarks) => {
     const accessToken = await oAuth2Client.getAccessToken();
-    
+
     console.log("sending email to ", addressee, "with remarks", remarks);
 
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            type: 'OAuth2',
+            type: "OAuth2",
             user: process.env.C2G8EMAIL,
             clientId: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
@@ -63,11 +62,19 @@ const sendPDFEmail = async (addressee, remarks) =>{
         },
         tls: {
             rejectUnauthorized: false,
-        }
+        },
     });
-    
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = mm + "/" + dd + "/" + yyyy;
+
     let mailOptions = {
         from: process.env.C2G8EMAIL,
+<<<<<<< HEAD
         to: addressee   ,
         subject: 'Audit:'.concat(new Date().format("DD MMM YYYY")),
         text: 'Hi, please find the audit attached for viewing. \n\nRemarks: '.concat(remarks),
@@ -79,29 +86,46 @@ const sendPDFEmail = async (addressee, remarks) =>{
             // path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
             contentType: 'aplication/pdf',
         }]
+=======
+        to: addressee,
+        subject: "Audit :".concat(today),
+        text: "Hi, please find the audit attached for viewing. \n\nRemarks: ".concat(
+            remarks
+        ),
+        attachments: [
+            {
+                filename: "result.pdf",
+                // path: 'C:/Users/Windows/ESCProject/sra-server/result.pdf',
+                // path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
+                // path: `~/result.pdf`,
+                path: `./result.pdf`,
+                // path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
+                contentType: "aplication/pdf",
+            },
+        ],
+>>>>>>> master
     };
-    
-    transporter.sendMail(mailOptions, function(err,data){
-        if (err){
+
+    transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
             console.log("err.message,", err);
-        } else{
+        } else {
             console.log("email sent!!");
             return "email sent!!";
         }
     });
     return null;
-}
+};
 
-const sendEmail = async (from, to, title, body) =>{
-
+const sendEmail = async (from, to, title, body) => {
     const accessToken = await oAuth2Client.getAccessToken();
-    
+
     console.log("Message from ".concat(from).concat(": ").concat(title));
 
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            type: 'OAuth2',
+            type: "OAuth2",
             user: process.env.C2G8EMAIL,
             clientId: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
@@ -110,25 +134,25 @@ const sendEmail = async (from, to, title, body) =>{
         },
         tls: {
             rejectUnauthorized: false,
-        }
+        },
     });
-    
+
     let mailOptions = {
         from: process.env.C2G8EMAIL,
-        to: to   ,
+        to: to,
         subject: "Message from ".concat(from).concat(": ").concat(title),
         text: body,
     };
-    
-    transporter.sendMail(mailOptions, function(err,data){
-        if (err){
+
+    transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
             console.log("err.message,", err);
-        } else{
+        } else {
             console.log("email sent!!");
             return "email sent!!";
         }
     });
     return null;
-}
+};
 
-module.exports = {sendEmail,sendPDFEmail};
+module.exports = { sendEmail, sendPDFEmail };
