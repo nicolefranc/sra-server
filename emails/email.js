@@ -74,19 +74,6 @@ const sendPDFEmail = async (addressee, remarks) => {
 
     let mailOptions = {
         from: process.env.C2G8EMAIL,
-<<<<<<< HEAD
-        to: addressee   ,
-        subject: 'Audit:'.concat(new Date().format("DD MMM YYYY")),
-        text: 'Hi, please find the audit attached for viewing. \n\nRemarks: '.concat(remarks),
-        attachments: [{
-            filename: 'result.pdf',
-            // path: 'C:/Users/Windows/ESCProject/sra-server/result.pdf',
-            // path: 'C:/Users/tohka/Documents/SingHealth/sra-server/result.pdf',
-            path: `~/result.pdf`,
-            // path: '/Users/nicoleyu/Developer/ESC/sra-server/result.pdf',
-            contentType: 'aplication/pdf',
-        }]
-=======
         to: addressee,
         subject: "Audit :".concat(today),
         text: "Hi, please find the audit attached for viewing. \n\nRemarks: ".concat(
@@ -103,7 +90,6 @@ const sendPDFEmail = async (addressee, remarks) => {
                 contentType: "aplication/pdf",
             },
         ],
->>>>>>> master
     };
 
     transporter.sendMail(mailOptions, function (err, data) {
