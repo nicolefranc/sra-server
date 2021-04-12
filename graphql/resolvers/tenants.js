@@ -93,6 +93,28 @@ module.exports = {
     },
   },
   Mutation: {
+    async changeTenantEmail(_,{email, id}){
+      if (email.trim() === '') {
+        throw new UserInputError('Email must not be empty');
+      } else {
+        const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+        if (!email.match(regEx)) {
+          throw new UserInputError('Email must be a valid email address');
+        }
+      }
+      const tenant = await Tenant.findOne({_id: id});
+      if (!tenant){
+        errors.general = "tenant not found";
+        throw new UserInputError("tenant not found", {errors});
+      }
+      tenant.email = email.toUpperCase();
+      try{
+        const savedTenant = tenant.save();
+        if (savedTenant) return savedTenant;
+      } catch(err){
+        throw new Error(err);
+      }
+    },
     async changeTenantExpiry(_, {tenantId, date}){
       const tenant = await Tenant.findOne({_id: tenantId});
       if (!tenant){
