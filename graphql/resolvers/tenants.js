@@ -72,6 +72,15 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getTenantByName(_, req) {
+      try {
+        const Tenants = await Tenant.findOne({ name: req.name });
+        console.log(Tenants);
+        return Tenants;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
     async getTenantByEmail(_, req) {
       try {
         const emailUpperCase = req.email.toUpperCase(); // to remove case sensitivity
@@ -84,6 +93,22 @@ module.exports = {
     },
   },
   Mutation: {
+    async changeTenantExpiry(_, {tenantId, date}){
+      const tenant = await Tenant.findOne({_id: tenantId});
+      if (!tenant){
+        errors.general = "tenant not found";
+        throw new UserInputError("tenant not found", {errors});
+      }
+      tenant.expiry = date;
+      try{
+        const savedTenant = tenant.save();
+        if (savedTenant) return savedTenant;
+      } catch(err){
+        throw new Error(err);
+      }
+
+    },
+
     async loginTenant(_, { email, password }) {
       const { errors, valid } = validateLoginInput(email, password); // checks whether input is empty
       if (!valid) {

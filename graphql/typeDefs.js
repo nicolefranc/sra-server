@@ -24,12 +24,13 @@ module.exports = gql`
     activated: String!
     token: String
     performance: [Performance]
+    expiry: String
   }
 
   type Performance {
     month: String!
-    key: String!
-    score: Int!
+    entry: String!
+    score: Float!
   }
   input CreateAuditorInput {
     name: String!
@@ -193,6 +194,7 @@ module.exports = gql`
     getTenantsByAuditor(auditorId: String!): [Tenant]
     getTenantByEmail(email: String!): Tenant
     getTenantById(id: String!): Tenant
+    getTenantByName(name: String!): Tenant
 
     getReportTemplate(type: String!): ReportTemplate!
     getAllReportTemplates: [ReportTemplate]!
@@ -200,7 +202,7 @@ module.exports = gql`
     getAllReportsByTenant(tenantId: String!): [Report]
     getAllReportsByAuditor(auditorId: String!): [Report]
     getReportById(reportId: String!): Report
-    getReportPDFById(reportId: String!): String
+    getReportPDFById(reportId: String!): File!
     getReportByAuditorAndStatus(auditorId: String!, status: String!): [Report]
     getReportByTenantAndStatus(tenantId: String!, status: String!): [Report]
   }
@@ -212,10 +214,13 @@ module.exports = gql`
     createTenant(createTenantInput: CreateTenantInput): Tenant!
     registerTenant(registerInput: RegisterInput): Tenant!
     loginTenant(email: String!, password: String!): Tenant!
+    changeTenantExpiry(tenantId:String!, date:String!): Tenant!
 
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!
+    proposeExtension(reportId: String!, date: String!, remarks: String!): Report!
     sendReportPDFById(reportId: String!, addressee: [String!], remarks: String!): String
+    sendEmail(from: String!, to: String!, title: String!, body: String!): String
 
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]
