@@ -53,6 +53,7 @@ module.exports = gql`
 
   type LineItemImage {
     lineItemId: String
+    lineItem: String
     nonCompliances: [String]
     nonComplRemarks: String
     rectifications: [String]
@@ -135,6 +136,7 @@ module.exports = gql`
 
   input IImages {
     lineItemId: String
+    lineItem: String
     nonCompliances: [String]
     nonComplRemarks: String
     rectifications: [String]
