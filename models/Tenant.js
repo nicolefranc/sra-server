@@ -17,7 +17,7 @@ const tenantSchema = new Schema({ //creates a mongoose schema
     expiry: String,
 });
 
-
+// lanjiao
 
 module.exports = model('Tenant', tenantSchema, 'tenants');
 // ^  creates a mongoose 'model' and subsequently exports it
@@ -27,4 +27,4 @@ module.exports = model('Tenant', tenantSchema, 'tenants');
 // performanceAll = []
 // for (i = 9; i < data.length;i++){
 //    performanceAll.push(data.performance)
-//}
+//} 

@@ -437,7 +437,7 @@ module.exports = {
 
 const computeNewPerfomance = function (tenant, report) {
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December",];
-    const currentMonth = months[new Date().getMonth()];
+    const currentMonth = months[new Date(report.extension.final.date).getMonth()];
     const currentMonthPerformance = tenant.performance.filter((item) => item.month === currentMonth);
     const performanceArray = [...tenant.performance]; //deep clone
     // 2. recompute average

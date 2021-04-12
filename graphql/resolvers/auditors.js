@@ -64,6 +64,29 @@ module.exports = {
     },
   },
   Mutation: {
+    async changeAuditorEmail(_,{email, id}){
+      if (email.trim() === '') {
+        throw new UserInputError('Email must not be empty');
+      } else {
+        const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+        if (!email.match(regEx)) {
+          throw new UserInputError('Email must be a valid email address');
+        }
+      }
+      const auditor = await Auditor.findOne({_id: id});
+      console.log(auditor);
+      if (!auditor){
+        errors.general = "auditor not found";
+        throw new UserInputError("auditor not found", {errors});
+      }
+      auditor.email = email.toUpperCase();
+      try{
+        const savedAuditor = auditor.save();
+        if (savedAuditor) return savedAuditor;
+      } catch(err){
+        throw new Error(err);
+      }
+    },
     async loginAuditor(_, { email, password }) {
       const { errors, valid } = validateLoginInput(email, password); // checks whether input is empty
       if (!valid) {
