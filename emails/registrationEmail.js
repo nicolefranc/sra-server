@@ -7,8 +7,9 @@ const oAuth2Client = new google.auth.OAuth2(
     process.env.REDIRECT_URL
 );
 
-const sendRegistrationEmail = (addressee, token) =>{
+const sendRegistrationEmail = async (addressee, token) =>{
     
+    const accessToken = await oAuth2Client.getAccessToken();
 
   let transporter = nodemailer.createTransport({
       service: "gmail",
