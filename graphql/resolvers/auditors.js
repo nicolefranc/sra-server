@@ -207,9 +207,9 @@ module.exports = {
       // Validate user data by checking whether email is empty, valid , and whether passwords match
       const { valid, errors } = validateCreateAuditorInput(
         name,
-        email,
         role,
-        institution
+        email,
+        institution,
       );
 
       if (!valid) {
