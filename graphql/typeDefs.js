@@ -217,6 +217,8 @@ module.exports = gql`
     changeTenantExpiry(tenantId:String!, date:String!): Tenant!
     changeAuditorEmail(email: String!, id: String!): Auditor!
     changeTenantEmail(email: String!, id: String!): Tenant!
+    addInstitution(inst: String!, id: String!): Auditor!
+    removeInstitution(inst: String!, id: String!): Auditor!
 
     createReportTemplate(body: TemplateInput!): ReportTemplate!
     createReport(body: ReportInput!): Report!

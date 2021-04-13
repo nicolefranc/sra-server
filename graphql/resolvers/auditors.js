@@ -87,6 +87,40 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async addInstitution(_,{inst, id}){
+      const auditor = await Auditor.findOne({_id: id});
+      console.log(auditor);
+      if (!auditor){
+        errors.general = "auditor not found";
+        throw new UserInputError("auditor not found", {errors});
+      } else if (auditor.institutions.includes(inst)) {
+        throw new UserInputError("Institution already exists");
+      }
+      auditor.institutions.push(inst);
+      try{
+        const savedAuditor = auditor.save();
+        if (savedAuditor) return savedAuditor;
+      } catch(err){
+        throw new Error(err);
+      }
+    },
+    async removeInstitution(_,{inst, id}){
+      const auditor = await Auditor.findOne({_id: id});
+      console.log(auditor);
+      if (!auditor){
+        errors.general = "auditor not found";
+        throw new UserInputError("auditor not found", {errors});
+      } else if (!auditor.institutions.includes(inst)) {
+        errors.general = "Institution already";
+      }
+      auditor.institutions = auditor.institutions.filter((val)=>{val !== inst});
+      try{
+        const savedAuditor = auditor.save();
+        if (savedAuditor) return savedAuditor;
+      } catch(err){
+        throw new Error(err);
+      }
+    },
     async loginAuditor(_, { email, password }) {
       const { errors, valid } = validateLoginInput(email, password); // checks whether input is empty
       if (!valid) {
