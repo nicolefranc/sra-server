@@ -1,4 +1,11 @@
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+
+const oAuth2Client = new google.auth.OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+);
 
 const sendRegistrationEmail = (addressee, token) =>{
     
@@ -6,15 +13,19 @@ const sendRegistrationEmail = (addressee, token) =>{
   let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
+          type: "OAuth2",
           user: process.env.C2G8EMAIL,
-          pass: process.env.C2G8PASSWORD,
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          refreshToken: process.env.REFRESH_TOKEN,
+          accessToken: accessToken,
       },
       tls: {
           rejectUnauthorized: false,
       }
   });
 
-  const url = `http://localhost:3000/register/${token}`;
+  const url = `http://singhealth.netlify.app/register/${token}`;
   console.log(url);
   
   let mailOptions = {
