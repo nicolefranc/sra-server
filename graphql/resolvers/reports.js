@@ -233,6 +233,29 @@ module.exports = {
             }
         },
 
+        async approveExtension(_, { reportId, finalDate, finalRemarks }, context) {
+            // const user = checkAuth(context);
+
+            const report = await Report.findOne({ _id: reportId });
+
+            if (!report) {
+                throw new Error("can't find report");
+            }
+            report.extension.proposed.date = null;
+            report.extension.proposed.remarks = null;
+            report.extension.final.date = finalDate;
+            report.extension.final.remarks = finalRemarks;
+            report.extension.status = "Approved";
+
+            try {
+                const savedReport = await report.save();
+                if (savedReport) return savedReport;
+                else throw new Error("Creation of report unsuccessful.");
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
         async sendReportPDFById(_, { reportId, addressee, remarks }) {
             console.log(addressee);
             try {
@@ -414,7 +437,7 @@ module.exports = {
 
 const computeNewPerfomance = function (tenant, report) {
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December",];
-    const currentMonth = months[new Date().getMonth()];
+    const currentMonth = months[new Date(report.extension.final.date).getMonth()];
     const currentMonthPerformance = tenant.performance.filter((item) => item.month === currentMonth);
     const performanceArray = [...tenant.performance]; //deep clone
     // 2. recompute average
