@@ -151,8 +151,10 @@ module.exports = (checklistData) => {
                  <td colspan="2">
                     <table>
                        <tr>
-                          <td class="title" style="width:80%; padding-left:40%; page"><img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
-                             style="max-width:220px;"></td>
+                          <td class="title" style="width:80%; padding-left:40%; page">
+                             <img src="https://www.singhealth.com.sg/Style%20Library/Common/images/header/site-logo.png"
+                             style="max-width:220px;">
+                           </td>
                        </tr>
                     </table>
                  </td>
