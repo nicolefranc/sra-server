@@ -9,6 +9,7 @@ const { sendEmail, sendPDFEmail } = require("../../emails/email");
 const checkAuth = require("../../util/check-auth");
 const Tenant = require("../../models/Tenant");
 const { AuthenticationError } = require("apollo-server-errors");
+const upload = require("./upload");
 
 var options = {
     format: "A4",
@@ -228,6 +229,24 @@ module.exports = {
                 const savedReport = await report.save();
                 if (savedReport) return savedReport;
                 else throw new Error("Creation of report unsuccessful.");
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        async createRectification(_, { id, images }, context) {
+            const update = { images };
+            console.log('New rectification');
+            console.log(id);
+            console.log(images);
+
+            try {
+                let report = await Report.findByIdAndUpdate(id, update, { new: true });
+                console.log('Report');
+                console.log(report);
+
+                if (report) return report;
+                else throw new Error('Rectification failed to save.');
             } catch (err) {
                 throw new Error(err);
             }

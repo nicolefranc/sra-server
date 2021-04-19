@@ -36,6 +36,26 @@ module.exports = {
             console.log(res);
             return res;
         },
+        rectificationUploads: async (_, { files, id }) => {
+            console.log(id)
+            let res = await Promise.all(
+                files.map(async (file, index) => {
+                    const { filename, mimetype, encoding, createReadStream } = await file;
+                    
+
+                    const { Location } = await s3.upload({
+                        Body: createReadStream(),
+                        Key: `r-${id}-0${index}`,
+                        ContentType: mimetype
+                    }).promise()
+
+                    return { filename, mimetype, encoding, uri: Location }
+                })
+            )
+
+            console.log(res);
+            return res;
+        },
         deleteUpload: async(_, { filename }) => {
             console.log(`[SERVER] Deleting ${filename}`);
             let res = await s3.deleteObject({

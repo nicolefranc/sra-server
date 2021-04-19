@@ -229,6 +229,8 @@ module.exports = gql`
 
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]
+    rectificationUploads(files: [Upload], id: String!): [File]
+    createRectification(id: String, images: [IImages]): Report
     deleteUpload(filename: String!): Boolean
   }
 `
