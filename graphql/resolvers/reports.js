@@ -252,6 +252,17 @@ module.exports = {
             }
         },
 
+        async approveRectification(_, { id, status}, context) {
+            try {
+                let report = await Report.findByIdAndUpdate(id, { status }, { new: true });
+
+                if (report) return report;
+                else throw new Error('Failed to approve rectification.');
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
         async approveExtension(_, { reportId, finalDate, finalRemarks }, context) {
             // const user = checkAuth(context);
 

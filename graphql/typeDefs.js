@@ -230,8 +230,10 @@ module.exports = gql`
     singleUpload(file: Upload!): File
     multipleUploads(files: [Upload], id: String!): [File]
     rectificationUploads(files: [Upload], id: String!): [File]
-    createRectification(id: String, images: [IImages]): Report
     deleteUpload(filename: String!): Boolean
+    
+    createRectification(id: String, images: [IImages]): Report
+    approveRectification(id: String, status: String) : Report
   }
 `
 //RegisterInput : 2 inputs because only email and name is already created and stored by the creator
