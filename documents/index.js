@@ -177,9 +177,7 @@ module.exports = (checklistData) => {
                     <table>
                         <tr>
                            <td>
-                           Date audited: ${`${today.getDate()}/${
-                              today.getMonth() + 1
-                           }/${today.getFullYear()}`}
+                           Date audited: ${checklistData.auditDate}
                            </td>
                         </tr>
                        <tr>
@@ -189,7 +187,7 @@ module.exports = (checklistData) => {
                        </tr>
                        <tr>
                         <td>
-                           Auditor(s): ${checklistData.type}
+                           Auditor(s): ${checklistData.auditorId}
                         </td>
                        </tr>
                     </table>
