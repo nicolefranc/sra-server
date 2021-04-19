@@ -235,7 +235,7 @@ module.exports = {
         },
 
         async createRectification(_, { id, images }, context) {
-            const update = { images };
+            const update = { status: 'rectified', images };
             console.log('New rectification');
             console.log(id);
             console.log(images);
