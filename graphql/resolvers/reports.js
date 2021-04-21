@@ -8,6 +8,7 @@ const pdfTemplate = require("../../documents");
 const { sendEmail, sendPDFEmail } = require("../../emails/email");
 const checkAuth = require("../../util/check-auth");
 const Tenant = require("../../models/Tenant");
+const Auditor = require("../../models/Auditor");
 const { AuthenticationError } = require("apollo-server-errors");
 const upload = require("./upload");
 
@@ -291,18 +292,26 @@ module.exports = {
             try {
                 console.log("report ID is ", reportId);
                 const report = await Report.findById(reportId);
+
                 if (report) {
-                    // const report = {somth: "smth", total: 98, item1: "not dusty", item1score: 1, item2: "not wet", item2score: 0};
-                    pdf.create(pdfTemplate(report), options).toFile(
-                        "result.pdf",
-                        (err) => {
-                            if (err) {
-                                throw new Error(err);
+                    console.log(report.auditorId);
+                    const auditor = await Auditor.findById(report.auditorId);
+
+                    if (auditor){
+                        console.log("auditor name is ",auditor.name);
+                        // const report = {somth: "smth", total: 98, item1: "not dusty", item1score: 1, item2: "not wet", item2score: 0};
+                        pdf.create(pdfTemplate(report, auditor.name), options).toFile(
+                            "result.pdf",
+                            (err) => {
+                                if (err) {
+                                    throw new Error(err);
+                                }
+                                console.log("pdf successfully created");
+                                sendPDFEmail(addressee, remarks);
+
                             }
-                            console.log("pdf successfully created");
-                            sendPDFEmail(addressee, remarks);
-                        }
-                    );
+                        );
+                    } else throw new Error("auditor not found");
                 } else throw new Error("Report not found.");
             } catch (err) {
                 throw new Error(err);

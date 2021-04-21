@@ -1,4 +1,4 @@
-module.exports = (checklistData) => {
+module.exports = (checklistData, auditorName) => {
    console.log(checklistData);
    const today = new Date();
 
@@ -187,7 +187,7 @@ module.exports = (checklistData) => {
                        </tr>
                        <tr>
                         <td>
-                           Auditor(s): ${checklistData.auditorId}
+                           Auditor(s): ${auditorName}
                         </td>
                        </tr>
                     </table>
